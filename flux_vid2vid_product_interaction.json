@@ -1,0 +1,168 @@
+{
+  "last_node_id": 60,
+  "last_link_id": 85,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "CheckpointLoaderSimple",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        315,
+        98
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            1
+          ]
+        },
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            2
+          ]
+        },
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            3
+          ]
+        }
+      ],
+      "widgets_values": [
+        "flux1-dev-fp8.safetensors"
+      ],
+      "title": "\ud83d\udcbe Load FLUX.1 [Dev]"
+    },
+    {
+      "id": 2,
+      "type": "VHS_LoadVideo",
+      "pos": [
+        0,
+        150
+      ],
+      "size": [
+        315,
+        200
+      ],
+      "flags": {},
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            6,
+            12,
+            14
+          ]
+        },
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": []
+        }
+      ],
+      "widgets_values": [
+        "source_action_video.mp4",
+        0,
+        0,
+        0,
+        30
+      ],
+      "title": "\ud83c\udfac SOURCE VIDEO (Driver)"
+    },
+    {
+      "id": 11,
+      "type": "Sam2ModelLoader",
+      "pos": [
+        400,
+        900
+      ],
+      "size": [
+        315,
+        58
+      ],
+      "flags": {},
+      "outputs": [
+        {
+          "name": "SAM2_MODEL",
+          "type": "SAM2_MODEL",
+          "links": [
+            11
+          ]
+        }
+      ],
+      "widgets_values": [
+        "sam2_hiera_large.safetensors"
+      ],
+      "title": "\u2702\ufe0f Load SAM2"
+    },
+    {
+      "id": 12,
+      "type": "Sam2AutoSegmentation",
+      "pos": [
+        400,
+        1000
+      ],
+      "size": [
+        315,
+        150
+      ],
+      "flags": {},
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 12
+        },
+        {
+          "name": "sam2_model",
+          "type": "SAM2_MODEL",
+          "link": 11
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": [
+            15
+          ]
+        }
+      ],
+      "widgets_values": [
+        "bottle",
+        0.5
+      ],
+      "title": "\ud83c\udfaf SAM2 Auto-Mask Product"
+    },
+    {
+      "id": 13,
+      "type": "Note",
+      "pos": [
+        800,
+        1000
+      ],
+      "size": [
+        300,
+        100
+      ],
+      "widgets_values": [
+        "This workflow requires 'ComfyUI-SAM2' and 'ComfyUI-VideoHelperSuite' custom nodes."
+      ],
+      "title": "\u2139\ufe0f Requirements"
+    }
+  ],
+  "links": [],
+  "version": 0.4
+}

@@ -1,0 +1,698 @@
+{
+  "last_node_id": 100,
+  "last_link_id": 150,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "LoadImage",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        320,
+        314
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            1
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "product_reference.jpg",
+        "image"
+      ],
+      "title": "Product Reference (Optional)"
+    },
+    {
+      "id": 2,
+      "type": "CheckpointLoaderSimple",
+      "pos": [
+        350,
+        0
+      ],
+      "size": [
+        315,
+        98
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            10
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            11,
+            12
+          ],
+          "slot_index": 1
+        },
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            13
+          ],
+          "slot_index": 2
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CheckpointLoaderSimple"
+      },
+      "widgets_values": [
+        "flux1-dev.safetensors"
+      ],
+      "title": "FLUX Checkpoint"
+    },
+    {
+      "id": 10,
+      "type": "CLIPTextEncode",
+      "pos": [
+        700,
+        0
+      ],
+      "size": [
+        450,
+        280
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 11
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            20
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        "Professional beauty influencer talking head. Young woman 25-30, flawless skin, natural makeup, long hair. Direct eye contact with camera, friendly welcoming smile. Head and shoulders in frame, sitting position. Clean white background. Studio lighting - soft key from left, fill from right. Mouth slightly open ready to speak. UGC creator aesthetic, authentic relatable. 8k, photorealistic."
+      ],
+      "title": "PROMPT: Avatar"
+    },
+    {
+      "id": 11,
+      "type": "CLIPTextEncode",
+      "pos": [
+        700,
+        300
+      ],
+      "size": [
+        450,
+        180
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 12
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            21
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        "low quality, blurry, deformed face, closed mouth, profile view, looking away, multiple people, cartoon, anime, bad lighting, amateur, webcam, filter, watermark"
+      ],
+      "title": "NEGATIVE"
+    },
+    {
+      "id": 20,
+      "type": "EmptyLatentImage",
+      "pos": [
+        700,
+        500
+      ],
+      "size": [
+        315,
+        106
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            30
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "EmptyLatentImage"
+      },
+      "widgets_values": [
+        832,
+        1216,
+        1
+      ],
+      "title": "Latent (2:3)"
+    },
+    {
+      "id": 21,
+      "type": "KSampler",
+      "pos": [
+        1200,
+        0
+      ],
+      "size": [
+        315,
+        262
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 10
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 20
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 21
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 30
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            40
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSampler"
+      },
+      "widgets_values": [
+        888888,
+        "fixed",
+        25,
+        3.5,
+        "euler",
+        "normal",
+        1
+      ],
+      "title": "Generate Avatar"
+    },
+    {
+      "id": 30,
+      "type": "VAEDecode",
+      "pos": [
+        1550,
+        0
+      ],
+      "size": [
+        210,
+        46
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 40
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 13
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            50,
+            51
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      }
+    },
+    {
+      "id": 31,
+      "type": "SaveImage",
+      "pos": [
+        1800,
+        0
+      ],
+      "size": [
+        315,
+        400
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 50
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        "avatar_base"
+      ]
+    },
+    {
+      "id": 50,
+      "type": "DiffusersLoader",
+      "pos": [
+        2150,
+        0
+      ],
+      "size": [
+        315,
+        78
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            70
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DiffusersLoader"
+      },
+      "widgets_values": [
+        "wan2.2-moe-I2V"
+      ]
+    },
+    {
+      "id": 51,
+      "type": "VAELoader",
+      "pos": [
+        2150,
+        100
+      ],
+      "size": [
+        315,
+        58
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            71
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader"
+      },
+      "widgets_values": [
+        "vace_wan.safetensors"
+      ]
+    },
+    {
+      "id": 60,
+      "type": "CLIPTextEncode",
+      "pos": [
+        2500,
+        0
+      ],
+      "size": [
+        450,
+        300
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            80
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        "UGC talking head video. Woman speaking to camera with natural energy. Lips moving in sync with speech. Natural hand gestures - holding jade roller, showing to camera, demonstrating on face. Expressive face - smiling, eyebrow raises, nodding. Eye contact with viewer. Head and body movement matching speech. Product visible in hand. Authentic influencer energy. Beauty commercial quality, 4k, photorealistic, smooth motion."
+      ],
+      "title": "VIDEO: Talking + Demo"
+    },
+    {
+      "id": 61,
+      "type": "CLIPTextEncode",
+      "pos": [
+        2500,
+        320
+      ],
+      "size": [
+        450,
+        180
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            81
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        "static, frozen, no movement, mouth closed, poor lip sync, stiff, robotic, jerky, flickering, distorted, low quality, blurry, amateur, stuttering"
+      ],
+      "title": "NEGATIVE"
+    },
+    {
+      "id": 70,
+      "type": "ImageToVideo",
+      "pos": [
+        3000,
+        0
+      ],
+      "size": [
+        315,
+        250
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 70
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 71
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 51
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 80
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 81
+        }
+      ],
+      "outputs": [
+        {
+          "name": "VIDEO",
+          "type": "VIDEO",
+          "links": [
+            90
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImageToVideo"
+      },
+      "widgets_values": [
+        720,
+        1280,
+        750,
+        35,
+        7.5,
+        999999
+      ],
+      "title": "Generate 30s Video"
+    },
+    {
+      "id": 80,
+      "type": "SaveVideo",
+      "pos": [
+        3350,
+        0
+      ],
+      "size": [
+        315,
+        100
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": 90
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        "infinite_talk",
+        25,
+        "h264"
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      31,
+      0,
+      "IMAGE"
+    ],
+    [
+      10,
+      2,
+      0,
+      21,
+      0,
+      "MODEL"
+    ],
+    [
+      11,
+      2,
+      1,
+      10,
+      0,
+      "CLIP"
+    ],
+    [
+      12,
+      2,
+      1,
+      11,
+      0,
+      "CLIP"
+    ],
+    [
+      13,
+      2,
+      2,
+      30,
+      1,
+      "VAE"
+    ],
+    [
+      20,
+      10,
+      0,
+      21,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      21,
+      11,
+      0,
+      21,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      30,
+      20,
+      0,
+      21,
+      3,
+      "LATENT"
+    ],
+    [
+      40,
+      21,
+      0,
+      30,
+      0,
+      "LATENT"
+    ],
+    [
+      50,
+      30,
+      0,
+      31,
+      0,
+      "IMAGE"
+    ],
+    [
+      51,
+      30,
+      0,
+      70,
+      2,
+      "IMAGE"
+    ],
+    [
+      70,
+      50,
+      0,
+      70,
+      0,
+      "MODEL"
+    ],
+    [
+      71,
+      51,
+      0,
+      70,
+      1,
+      "VAE"
+    ],
+    [
+      80,
+      60,
+      0,
+      70,
+      3,
+      "CONDITIONING"
+    ],
+    [
+      81,
+      61,
+      0,
+      70,
+      4,
+      "CONDITIONING"
+    ],
+    [
+      90,
+      70,
+      0,
+      80,
+      0,
+      "VIDEO"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+}

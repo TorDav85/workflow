@@ -1,0 +1,911 @@
+{
+  "id": "ugc-tiktok-fashion-complete-90gb",
+  "revision": 1,
+  "last_node_id": 300,
+  "last_link_id": 400,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "LoadImage",
+      "pos": [-2200, -800],
+      "size": [315, 314],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "slot_index": 0, "links": [1, 2]}
+      ],
+      "title": "🧑 Avatar UGC Creator",
+      "properties": {"Node name for S&R": "LoadImage"},
+      "widgets_values": ["avatar_ugc.png", "image"],
+      "color": "#322",
+      "bgcolor": "#533"
+    },
+    {
+      "id": 2,
+      "type": "LoadImage",
+      "pos": [-2200, -400],
+      "size": [315, 314],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "slot_index": 0, "links": [10, 11, 12]}
+      ],
+      "title": "👗 Product Image (Main)",
+      "properties": {"Node name for S&R": "LoadImage"},
+      "widgets_values": ["product_main.png", "image"],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 3,
+      "type": "LoadImage",
+      "pos": [-2200, 0],
+      "size": [315, 314],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "slot_index": 0, "links": [13, 14]}
+      ],
+      "title": "👗 Product Image (Detail/Texture)",
+      "properties": {"Node name for S&R": "LoadImage"},
+      "widgets_values": ["product_detail.png", "image"],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 4,
+      "type": "LoadImage",
+      "pos": [-2200, 400],
+      "size": [315, 314],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "slot_index": 0, "links": [15, 16]}
+      ],
+      "title": "👗 Product Image (Lifestyle/Worn)",
+      "properties": {"Node name for S&R": "LoadImage"},
+      "widgets_values": ["product_lifestyle.png", "image"],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 5,
+      "type": "LoadAudio",
+      "pos": [-2200, 800],
+      "size": [315, 124],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "AUDIO", "type": "AUDIO", "slot_index": 0, "links": [20]}
+      ],
+      "title": "🔊 Voice Sample (10-30s pour clone)",
+      "properties": {"Node name for S&R": "LoadAudio"},
+      "widgets_values": ["voice_sample.wav"],
+      "color": "#342",
+      "bgcolor": "#563"
+    },
+    {
+      "id": 6,
+      "type": "Note",
+      "pos": [-2200, -1100],
+      "size": [800, 250],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "🎬 UGC TIKTOK FASHION - COMPLETE PIPELINE",
+      "properties": {},
+      "widgets_values": [
+        "⚡ PIPELINE COMPLET VIDÉO UGC TIKTOK VÊTEMENTS:\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n📹 STRUCTURE VIDÉO (30s TikTok optimal):\n[0-2s]   HOOK → Plan produit animé (zoom dynamique) + texte accrocheur\n[2-8s]   INTRO → Talking head \"Cette pièce est incroyable...\"\n[8-12s]  B-ROLL → Détails produit (texture, coupe, qualité)\n[12-20s] BODY → Talking head avantages + bénéfices\n[20-24s] B-ROLL → Produit lifestyle / porté\n[24-28s] CTA → Talking head \"Lien en bio!\"\n[28-30s] OUTRO → Logo + produit final\n\n🎯 FORMAT: 1080x1920 (9:16) | 24fps | H.265 | 15-60 secondes"
+      ],
+      "color": "#324",
+      "bgcolor": "#546"
+    },
+    {
+      "id": 10,
+      "type": "FishSpeechLoader",
+      "pos": [-1700, -700],
+      "size": [400, 150],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "FISH_MODEL", "type": "FISH_MODEL", "slot_index": 0, "links": [25]}
+      ],
+      "title": "🧠 Fish Speech 1.4",
+      "properties": {"Node name for S&R": "FishSpeechLoader"},
+      "widgets_values": ["fish-speech-1.4", "cuda", "bfloat16", true],
+      "color": "#342",
+      "bgcolor": "#563"
+    },
+    {
+      "id": 11,
+      "type": "FishSpeechGenerate",
+      "pos": [-1700, -450],
+      "size": [500, 400],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {"name": "fish_model", "type": "FISH_MODEL", "link": 25},
+        {"name": "reference_audio", "type": "AUDIO", "link": 20},
+        {"name": "text", "type": "STRING", "widget": {"name": "text"}, "link": 100}
+      ],
+      "outputs": [
+        {"name": "AUDIO", "type": "AUDIO", "slot_index": 0, "links": [30, 31]}
+      ],
+      "title": "🗣️ Generate UGC Script Audio",
+      "properties": {"Node name for S&R": "FishSpeechGenerate"},
+      "widgets_values": [
+        "",
+        "fr",
+        1.0,
+        0.7,
+        0.9,
+        1.15,
+        true,
+        44100
+      ],
+      "color": "#342",
+      "bgcolor": "#563"
+    },
+    {
+      "id": 12,
+      "type": "PrimitiveNode",
+      "pos": [-1700, 50],
+      "size": [500, 250],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "STRING", "type": "STRING", "slot_index": 0, "links": [100]}
+      ],
+      "title": "📝 SCRIPT UGC (Modifier ici!)",
+      "properties": {},
+      "widgets_values": [
+        "Oh my god, regardez cette pièce ! Je viens de la recevoir et franchement, la qualité est dingue. Le tissu est super doux, la coupe est parfaite. J'adore comment ça tombe. Et le plus fou ? Le prix ! C'est vraiment le meilleur rapport qualité prix que j'ai trouvé. Le lien est en bio, foncez avant qu'il y ait plus de stock !"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 20,
+      "type": "MuseTalkLoader",
+      "pos": [-1100, -700],
+      "size": [400, 200],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "MUSETALK_MODEL", "type": "MUSETALK_MODEL", "slot_index": 0, "links": [35]}
+      ],
+      "title": "🧠 MuseTalk HD",
+      "properties": {"Node name for S&R": "MuseTalkLoader"},
+      "widgets_values": ["musetalk_v1.5", "cuda", "bfloat16", true, true],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 21,
+      "type": "MuseTalkGenerate",
+      "pos": [-1100, -400],
+      "size": [450, 350],
+      "flags": {},
+      "order": 20,
+      "mode": 0,
+      "inputs": [
+        {"name": "musetalk_model", "type": "MUSETALK_MODEL", "link": 35},
+        {"name": "source_image", "type": "IMAGE", "link": 1},
+        {"name": "driving_audio", "type": "AUDIO", "link": 30}
+      ],
+      "outputs": [
+        {"name": "IMAGES", "type": "IMAGE", "slot_index": 0, "links": [40]},
+        {"name": "frame_count", "type": "INT", "links": [41]},
+        {"name": "fps", "type": "FLOAT", "links": [42]}
+      ],
+      "title": "👄 MuseTalk Lip-Sync (1024x1024)",
+      "properties": {"Node name for S&R": "MuseTalkGenerate"},
+      "widgets_values": [24, 1024, 1024, 1.0, 0.95, true, "stable", 8, true],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 30,
+      "type": "WanVideoModelLoader",
+      "pos": [-1100, 50],
+      "size": [400, 250],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {"name": "compile_args", "shape": 7, "type": "WANCOMPILEARGS", "link": null},
+        {"name": "block_swap_args", "shape": 7, "type": "BLOCKSWAPARGS", "link": null}
+      ],
+      "outputs": [
+        {"name": "wan_video_model", "type": "WANVIDEOMODEL", "slot_index": 0, "links": [50]}
+      ],
+      "title": "🧠 Wan 2.1 14B (Product Animation)",
+      "properties": {"Node name for S&R": "WanVideoModelLoader"},
+      "widgets_values": ["wan2.1_i2v_720p_14B_bf16.safetensors", "bf16", "sageattn", false, false, false, false, 1],
+      "color": "#324",
+      "bgcolor": "#546"
+    },
+    {
+      "id": 31,
+      "type": "WanVideoVAELoader",
+      "pos": [-1100, 350],
+      "size": [400, 58],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "vae", "type": "WANVAE", "slot_index": 0, "links": [51, 52, 53]}
+      ],
+      "title": "🎞️ Wan VAE",
+      "properties": {"Node name for S&R": "WanVideoVAELoader"},
+      "widgets_values": ["wan_2.1_vae.safetensors", "fp16"],
+      "color": "#324",
+      "bgcolor": "#546"
+    },
+    {
+      "id": 32,
+      "type": "WanVideoTextEncoderLoader",
+      "pos": [-1100, 450],
+      "size": [400, 82],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "wan_text_encoder", "type": "WANTEXTENCODER", "slot_index": 0, "links": [54, 55, 56]}
+      ],
+      "title": "📝 UMT5 XXL",
+      "properties": {"Node name for S&R": "WanVideoTextEncoderLoader"},
+      "widgets_values": ["umt5_xxl_fp16.safetensors", "fp16"],
+      "color": "#324",
+      "bgcolor": "#546"
+    },
+    {
+      "id": 40,
+      "type": "WanVideoTextEncode",
+      "pos": [-500, -200],
+      "size": [450, 200],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [
+        {"name": "wan_text_encoder", "type": "WANTEXTENCODER", "link": 54}
+      ],
+      "outputs": [
+        {"name": "text_embeds", "type": "WANVIDEOTEXTEMBEDS", "slot_index": 0, "links": [60]}
+      ],
+      "title": "✍️ Prompt HOOK (Zoom produit)",
+      "properties": {"Node name for S&R": "WanVideoTextEncode"},
+      "widgets_values": [
+        "Cinematic product reveal, dramatic zoom in on luxury clothing item, soft studio lighting, elegant fabric texture visible, premium brand aesthetic, smooth camera movement, high-end commercial style, 4K quality",
+        "blurry, shaky, low quality, amateur, overexposed"
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 41,
+      "type": "WanVideoTextEncode",
+      "pos": [-500, 100],
+      "size": [450, 200],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "inputs": [
+        {"name": "wan_text_encoder", "type": "WANTEXTENCODER", "link": 55}
+      ],
+      "outputs": [
+        {"name": "text_embeds", "type": "WANVIDEOTEXTEMBEDS", "slot_index": 0, "links": [61]}
+      ],
+      "title": "✍️ Prompt B-ROLL Detail",
+      "properties": {"Node name for S&R": "WanVideoTextEncode"},
+      "widgets_values": [
+        "Close-up macro shot of premium fabric texture, soft natural lighting, subtle movement revealing material quality, luxury fashion detail, gentle rotation showing craftsmanship, professional product photography style",
+        "blurry, shaky, fast motion, amateur"
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 42,
+      "type": "WanVideoTextEncode",
+      "pos": [-500, 400],
+      "size": [450, 200],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [
+        {"name": "wan_text_encoder", "type": "WANTEXTENCODER", "link": 56}
+      ],
+      "outputs": [
+        {"name": "text_embeds", "type": "WANVIDEOTEXTEMBEDS", "slot_index": 0, "links": [62]}
+      ],
+      "title": "✍️ Prompt B-ROLL Lifestyle",
+      "properties": {"Node name for S&R": "WanVideoTextEncode"},
+      "widgets_values": [
+        "Lifestyle fashion shot, model wearing elegant clothing, natural movement, soft daylight, trendy urban background, Instagram aesthetic, subtle wind effect on fabric, aspirational mood, influencer style",
+        "static, boring, amateur, harsh lighting"
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 50,
+      "type": "WanVideoImageEncode",
+      "pos": [50, -300],
+      "size": [350, 120],
+      "flags": {},
+      "order": 21,
+      "mode": 0,
+      "inputs": [
+        {"name": "vae", "type": "WANVAE", "link": 51},
+        {"name": "image", "type": "IMAGE", "link": 10}
+      ],
+      "outputs": [
+        {"name": "image_embeds", "type": "WANVIDIMAGE_EMBEDS", "links": [70], "slot_index": 0}
+      ],
+      "title": "🖼️ Encode Product Main",
+      "properties": {"Node name for S&R": "WanVideoImageEncode"},
+      "widgets_values": [0, 1],
+      "color": "#323",
+      "bgcolor": "#535"
+    },
+    {
+      "id": 51,
+      "type": "WanVideoImageEncode",
+      "pos": [50, -100],
+      "size": [350, 120],
+      "flags": {},
+      "order": 22,
+      "mode": 0,
+      "inputs": [
+        {"name": "vae", "type": "WANVAE", "link": 52},
+        {"name": "image", "type": "IMAGE", "link": 13}
+      ],
+      "outputs": [
+        {"name": "image_embeds", "type": "WANVIDIMAGE_EMBEDS", "links": [71], "slot_index": 0}
+      ],
+      "title": "🖼️ Encode Product Detail",
+      "properties": {"Node name for S&R": "WanVideoImageEncode"},
+      "widgets_values": [0, 1],
+      "color": "#323",
+      "bgcolor": "#535"
+    },
+    {
+      "id": 52,
+      "type": "WanVideoImageEncode",
+      "pos": [50, 100],
+      "size": [350, 120],
+      "flags": {},
+      "order": 23,
+      "mode": 0,
+      "inputs": [
+        {"name": "vae", "type": "WANVAE", "link": 53},
+        {"name": "image", "type": "IMAGE", "link": 15}
+      ],
+      "outputs": [
+        {"name": "image_embeds", "type": "WANVIDIMAGE_EMBEDS", "links": [72], "slot_index": 0}
+      ],
+      "title": "🖼️ Encode Product Lifestyle",
+      "properties": {"Node name for S&R": "WanVideoImageEncode"},
+      "widgets_values": [0, 1],
+      "color": "#323",
+      "bgcolor": "#535"
+    },
+    {
+      "id": 60,
+      "type": "WanVideoSampler",
+      "pos": [500, -400],
+      "size": [400, 400],
+      "flags": {},
+      "order": 25,
+      "mode": 0,
+      "inputs": [
+        {"name": "wan_video_model", "type": "WANVIDEOMODEL", "link": 50},
+        {"name": "image_embeds", "type": "WANVIDIMAGE_EMBEDS", "link": 70},
+        {"name": "text_embeds", "type": "WANVIDEOTEXTEMBEDS", "link": 60}
+      ],
+      "outputs": [
+        {"name": "samples", "type": "LATENT", "slot_index": 0, "links": [80]}
+      ],
+      "title": "🎲 Generate HOOK (2s = 48 frames)",
+      "properties": {"Node name for S&R": "WanVideoSampler"},
+      "widgets_values": [1080, 1920, 48, 30, 6, "fixed", 111111, 1, 1, false, "comfy", 0, -1, false],
+      "color": "#323",
+      "bgcolor": "#535"
+    },
+    {
+      "id": 61,
+      "type": "WanVideoSampler",
+      "pos": [500, 100],
+      "size": [400, 400],
+      "flags": {},
+      "order": 26,
+      "mode": 0,
+      "inputs": [
+        {"name": "wan_video_model", "type": "WANVIDEOMODEL", "link": 50},
+        {"name": "image_embeds", "type": "WANVIDIMAGE_EMBEDS", "link": 71},
+        {"name": "text_embeds", "type": "WANVIDEOTEXTEMBEDS", "link": 61}
+      ],
+      "outputs": [
+        {"name": "samples", "type": "LATENT", "slot_index": 0, "links": [81]}
+      ],
+      "title": "🎲 Generate B-ROLL Detail (4s = 96 frames)",
+      "properties": {"Node name for S&R": "WanVideoSampler"},
+      "widgets_values": [1080, 1920, 96, 30, 6, "fixed", 222222, 1, 1, false, "comfy", 0, -1, false],
+      "color": "#323",
+      "bgcolor": "#535"
+    },
+    {
+      "id": 62,
+      "type": "WanVideoSampler",
+      "pos": [500, 600],
+      "size": [400, 400],
+      "flags": {},
+      "order": 27,
+      "mode": 0,
+      "inputs": [
+        {"name": "wan_video_model", "type": "WANVIDEOMODEL", "link": 50},
+        {"name": "image_embeds", "type": "WANVIDIMAGE_EMBEDS", "link": 72},
+        {"name": "text_embeds", "type": "WANVIDEOTEXTEMBEDS", "link": 62}
+      ],
+      "outputs": [
+        {"name": "samples", "type": "LATENT", "slot_index": 0, "links": [82]}
+      ],
+      "title": "🎲 Generate B-ROLL Lifestyle (4s = 96 frames)",
+      "properties": {"Node name for S&R": "WanVideoSampler"},
+      "widgets_values": [1080, 1920, 96, 30, 6, "fixed", 333333, 1, 1, false, "comfy", 0, -1, false],
+      "color": "#323",
+      "bgcolor": "#535"
+    },
+    {
+      "id": 70,
+      "type": "WanVideoDecode",
+      "pos": [1000, -350],
+      "size": [300, 150],
+      "flags": {},
+      "order": 30,
+      "mode": 0,
+      "inputs": [
+        {"name": "vae", "type": "WANVAE", "link": 51},
+        {"name": "samples", "type": "LATENT", "link": 80}
+      ],
+      "outputs": [
+        {"name": "images", "type": "IMAGE", "slot_index": 0, "links": [90]}
+      ],
+      "title": "🎞️ Decode HOOK",
+      "properties": {"Node name for S&R": "WanVideoDecode"},
+      "widgets_values": [true, 24, 12, 144, 128, "default"],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 71,
+      "type": "WanVideoDecode",
+      "pos": [1000, -100],
+      "size": [300, 150],
+      "flags": {},
+      "order": 31,
+      "mode": 0,
+      "inputs": [
+        {"name": "vae", "type": "WANVAE", "link": 52},
+        {"name": "samples", "type": "LATENT", "link": 81}
+      ],
+      "outputs": [
+        {"name": "images", "type": "IMAGE", "slot_index": 0, "links": [91]}
+      ],
+      "title": "🎞️ Decode B-ROLL Detail",
+      "properties": {"Node name for S&R": "WanVideoDecode"},
+      "widgets_values": [true, 24, 12, 144, 128, "default"],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 72,
+      "type": "WanVideoDecode",
+      "pos": [1000, 150],
+      "size": [300, 150],
+      "flags": {},
+      "order": 32,
+      "mode": 0,
+      "inputs": [
+        {"name": "vae", "type": "WANVAE", "link": 53},
+        {"name": "samples", "type": "LATENT", "link": 82}
+      ],
+      "outputs": [
+        {"name": "images", "type": "IMAGE", "slot_index": 0, "links": [92]}
+      ],
+      "title": "🎞️ Decode B-ROLL Lifestyle",
+      "properties": {"Node name for S&R": "WanVideoDecode"},
+      "widgets_values": [true, 24, 12, 144, 128, "default"],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 80,
+      "type": "ImageResize",
+      "pos": [1400, -600],
+      "size": [300, 150],
+      "flags": {},
+      "order": 28,
+      "mode": 0,
+      "inputs": [
+        {"name": "image", "type": "IMAGE", "link": 40}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "slot_index": 0, "links": [95]}
+      ],
+      "title": "📐 Resize Talking Head → 1080x1920",
+      "properties": {"Node name for S&R": "ImageResize"},
+      "widgets_values": [1080, 1920, "lanczos", "disabled", "always", 0],
+      "color": "#323",
+      "bgcolor": "#535"
+    },
+    {
+      "id": 90,
+      "type": "VHS_SplitImages",
+      "pos": [1400, -350],
+      "size": [300, 100],
+      "flags": {},
+      "order": 35,
+      "mode": 0,
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 95}
+      ],
+      "outputs": [
+        {"name": "SEGMENT_1", "type": "IMAGE", "slot_index": 0, "links": [110]},
+        {"name": "SEGMENT_2", "type": "IMAGE", "slot_index": 1, "links": [111]},
+        {"name": "SEGMENT_3", "type": "IMAGE", "slot_index": 2, "links": [112]}
+      ],
+      "title": "✂️ Split Talking Head (3 segments)",
+      "properties": {"Node name for S&R": "VHS_SplitImages"},
+      "widgets_values": [144, 192, 96],
+      "color": "#342",
+      "bgcolor": "#563"
+    },
+    {
+      "id": 100,
+      "type": "VHS_MergeImages",
+      "pos": [1800, -200],
+      "size": [400, 300],
+      "flags": {},
+      "order": 40,
+      "mode": 0,
+      "inputs": [
+        {"name": "images_1", "type": "IMAGE", "link": 90},
+        {"name": "images_2", "type": "IMAGE", "link": 110},
+        {"name": "images_3", "type": "IMAGE", "link": 91},
+        {"name": "images_4", "type": "IMAGE", "link": 111},
+        {"name": "images_5", "type": "IMAGE", "link": 92},
+        {"name": "images_6", "type": "IMAGE", "link": 112}
+      ],
+      "outputs": [
+        {"name": "IMAGES", "type": "IMAGE", "slot_index": 0, "links": [120]}
+      ],
+      "title": "🔗 Merge All Segments (Timeline)",
+      "properties": {"Node name for S&R": "VHS_MergeImages"},
+      "widgets_values": [],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 101,
+      "type": "Note",
+      "pos": [1800, -450],
+      "size": [400, 200],
+      "flags": {},
+      "order": 36,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "📋 TIMELINE STRUCTURE",
+      "properties": {},
+      "widgets_values": [
+        "🎬 ORDRE DES SEGMENTS:\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n1. HOOK (48f = 2s) → Zoom produit\n2. TALKING 1 (144f = 6s) → Intro\n3. B-ROLL DETAIL (96f = 4s) → Texture\n4. TALKING 2 (192f = 8s) → Avantages\n5. B-ROLL LIFESTYLE (96f = 4s) → Porté\n6. TALKING 3 (96f = 4s) → CTA\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nTOTAL: 672 frames = 28 secondes"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 110,
+      "type": "FaceRestoreModelLoader",
+      "pos": [2300, -400],
+      "size": [300, 58],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "FACERESTORE_MODEL", "type": "FACERESTORE_MODEL", "slot_index": 0, "links": [130]}
+      ],
+      "title": "🧠 CodeFormer",
+      "properties": {"Node name for S&R": "FaceRestoreModelLoader"},
+      "widgets_values": ["codeformer.pth"],
+      "color": "#342",
+      "bgcolor": "#563"
+    },
+    {
+      "id": 111,
+      "type": "FaceRestoreCFCodeFormer",
+      "pos": [2300, -300],
+      "size": [300, 150],
+      "flags": {},
+      "order": 41,
+      "mode": 0,
+      "inputs": [
+        {"name": "image", "type": "IMAGE", "link": 120},
+        {"name": "facerestore_model", "type": "FACERESTORE_MODEL", "link": 130}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "slot_index": 0, "links": [135]}
+      ],
+      "title": "👤 Face Enhancement",
+      "properties": {"Node name for S&R": "FaceRestoreCFCodeFormer"},
+      "widgets_values": [1, 0.6],
+      "color": "#342",
+      "bgcolor": "#563"
+    },
+    {
+      "id": 120,
+      "type": "VHS_VideoCombine",
+      "pos": [2700, -400],
+      "size": [450, 500],
+      "flags": {},
+      "order": 45,
+      "mode": 0,
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 135},
+        {"name": "audio", "type": "AUDIO", "link": 31},
+        {"name": "meta_batch", "shape": 7, "type": "VHS_BatchManager", "link": null}
+      ],
+      "outputs": [
+        {"name": "Filenames", "type": "VHS_FILENAMES", "links": null}
+      ],
+      "title": "💾 Export TikTok Ready (H.265 + Audio)",
+      "properties": {"Node name for S&R": "VHS_VideoCombine"},
+      "widgets_values": {
+        "frame_rate": 24,
+        "loop_count": 0,
+        "filename_prefix": "ugc_tiktok_fashion",
+        "format": "video/h265-mp4",
+        "pix_fmt": "yuv420p10le",
+        "crf": 18,
+        "save_metadata": true,
+        "pingpong": false,
+        "save_output": true,
+        "audio_codec": "aac",
+        "audio_bitrate": "256k"
+      },
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 121,
+      "type": "PreviewImage",
+      "pos": [2700, 200],
+      "size": [450, 400],
+      "flags": {},
+      "order": 46,
+      "mode": 0,
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 135}
+      ],
+      "outputs": [],
+      "title": "👀 Preview Final Video",
+      "properties": {"Node name for S&R": "PreviewImage"},
+      "widgets_values": [],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 130,
+      "type": "Note",
+      "pos": [-2200, 1000],
+      "size": [800, 350],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "📦 INPUTS REQUIS",
+      "properties": {},
+      "widgets_values": [
+        "🖼️ IMAGES À PRÉPARER:\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n1️⃣ avatar_ugc.png (obligatoire)\n   → Photo frontale visage, bonne lumière, regard caméra\n   → Idéalement 1024x1024 ou plus\n\n2️⃣ product_main.png (obligatoire)\n   → Photo produit sur fond neutre, vue principale\n   → Format 9:16 (1080x1920) ou carré\n\n3️⃣ product_detail.png (recommandé)\n   → Gros plan texture/détails/coutures\n   → Montre la qualité du produit\n\n4️⃣ product_lifestyle.png (recommandé)\n   → Produit porté OU en situation lifestyle\n   → Ambiance aspirationnelle\n\n5️⃣ voice_sample.wav (obligatoire)\n   → 10-30 secondes de voix claire\n   → Même personne que l'avatar idéalement"
+      ],
+      "color": "#433",
+      "bgcolor": "#655"
+    },
+    {
+      "id": 131,
+      "type": "Note",
+      "pos": [2700, -650],
+      "size": [450, 200],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "🎯 TIPS OPTIMISATION TIKTOK",
+      "properties": {},
+      "widgets_values": [
+        "⚡ BEST PRACTICES:\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n• HOOK: Les 2 premières secondes = CRUCIALES\n• Texte accrocheur sur le hook (ajouter en post)\n• Script naturel, pas trop \"pub\"\n• Varier talking head / b-roll = garde l'attention\n• CTA clair à la fin\n• Sous-titres recommandés (ajouter en post)\n\n📱 POST-PRODUCTION (CapCut/Premiere):\n• Ajouter textes animés\n• Musique trending (attention copyright)\n• Sous-titres auto\n• Hashtags dans description"
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    }
+  ],
+  "links": [
+    [1, 1, 0, 21, 1, "IMAGE"],
+    [2, 1, 0, 80, 0, "IMAGE"],
+    [10, 2, 0, 50, 1, "IMAGE"],
+    [11, 2, 0, 60, 1, "IMAGE"],
+    [12, 2, 0, 100, 0, "IMAGE"],
+    [13, 3, 0, 51, 1, "IMAGE"],
+    [14, 3, 0, 61, 1, "IMAGE"],
+    [15, 4, 0, 52, 1, "IMAGE"],
+    [16, 4, 0, 62, 1, "IMAGE"],
+    [20, 5, 0, 11, 1, "AUDIO"],
+    [25, 10, 0, 11, 0, "FISH_MODEL"],
+    [30, 11, 0, 21, 2, "AUDIO"],
+    [31, 11, 0, 120, 1, "AUDIO"],
+    [35, 20, 0, 21, 0, "MUSETALK_MODEL"],
+    [40, 21, 0, 80, 0, "IMAGE"],
+    [41, 21, 1, 90, 0, "INT"],
+    [42, 21, 2, 120, 0, "FLOAT"],
+    [50, 30, 0, 60, 0, "WANVIDEOMODEL"],
+    [51, 31, 0, 50, 0, "WANVAE"],
+    [52, 31, 0, 51, 0, "WANVAE"],
+    [53, 31, 0, 52, 0, "WANVAE"],
+    [54, 32, 0, 40, 0, "WANTEXTENCODER"],
+    [55, 32, 0, 41, 0, "WANTEXTENCODER"],
+    [56, 32, 0, 42, 0, "WANTEXTENCODER"],
+    [60, 40, 0, 60, 2, "WANVIDEOTEXTEMBEDS"],
+    [61, 41, 0, 61, 2, "WANVIDEOTEXTEMBEDS"],
+    [62, 42, 0, 62, 2, "WANVIDEOTEXTEMBEDS"],
+    [70, 50, 0, 60, 1, "WANVIDIMAGE_EMBEDS"],
+    [71, 51, 0, 61, 1, "WANVIDIMAGE_EMBEDS"],
+    [72, 52, 0, 62, 1, "WANVIDIMAGE_EMBEDS"],
+    [80, 60, 0, 70, 1, "LATENT"],
+    [81, 61, 0, 71, 1, "LATENT"],
+    [82, 62, 0, 72, 1, "LATENT"],
+    [90, 70, 0, 100, 0, "IMAGE"],
+    [91, 71, 0, 100, 2, "IMAGE"],
+    [92, 72, 0, 100, 4, "IMAGE"],
+    [95, 80, 0, 90, 0, "IMAGE"],
+    [100, 12, 0, 11, 2, "STRING"],
+    [110, 90, 0, 100, 1, "IMAGE"],
+    [111, 90, 1, 100, 3, "IMAGE"],
+    [112, 90, 2, 100, 5, "IMAGE"],
+    [120, 100, 0, 111, 0, "IMAGE"],
+    [130, 110, 0, 111, 1, "FACERESTORE_MODEL"],
+    [135, 111, 0, 120, 0, "IMAGE"]
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "title": "📥 INPUTS (Avatar + Products + Voice)",
+      "bounding": [-2250, -1150, 850, 1700],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 2,
+      "title": "🗣️ VOICE GENERATION (Fish Speech)",
+      "bounding": [-1750, -750, 600, 600],
+      "color": "#8A8",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 3,
+      "title": "👄 LIP-SYNC (MuseTalk HD)",
+      "bounding": [-1150, -750, 550, 500],
+      "color": "#A88",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 4,
+      "title": "🎬 PRODUCT ANIMATION (Wan 2.1 14B)",
+      "bounding": [-1150, 0, 1100, 1100],
+      "color": "#88A",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 5,
+      "title": "🎞️ VIDEO DECODE",
+      "bounding": [950, -450, 400, 700],
+      "color": "#8AA",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 6,
+      "title": "✂️ TIMELINE ASSEMBLY",
+      "bounding": [1350, -500, 550, 700],
+      "color": "#AA8",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 7,
+      "title": "👤 FACE ENHANCEMENT",
+      "bounding": [2250, -450, 400, 350],
+      "color": "#A8A",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 8,
+      "title": "💾 EXPORT TIKTOK (H.265 + Audio)",
+      "bounding": [2650, -700, 550, 1000],
+      "color": "#8A8",
+      "font_size": 24,
+      "flags": {}
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.35,
+      "offset": [1500, 1200]
+    },
+    "info": {
+      "name": "UGC TikTok Fashion - Complete Pipeline",
+      "author": "Claude AI",
+      "description": "Complete pipeline for TikTok UGC fashion content: talking head + product B-roll + timeline assembly",
+      "version": "1.0",
+      "vram_required": "70-90GB",
+      "output_format": "1080x1920 (9:16)",
+      "duration": "~28 seconds",
+      "features": [
+        "Fish Speech 1.4 voice cloning",
+        "MuseTalk HD 1024x1024 lip-sync",
+        "Wan 2.1 14B product animation",
+        "3 product B-roll segments",
+        "Automatic timeline assembly",
+        "Face enhancement",
+        "H.265 10-bit export",
+        "Audio sync"
+      ],
+      "video_structure": [
+        "HOOK: 2s product zoom",
+        "TALKING 1: 6s intro",
+        "B-ROLL: 4s detail",
+        "TALKING 2: 8s benefits",
+        "B-ROLL: 4s lifestyle",
+        "TALKING 3: 4s CTA"
+      ],
+      "requirements": [
+        "ComfyUI-Fish-Speech",
+        "ComfyUI-MuseTalk",
+        "ComfyUI-WanVideoWrapper",
+        "ComfyUI-VideoHelperSuite",
+        "ComfyUI-FaceRestore"
+      ]
+    }
+  },
+  "version": 0.4
+}

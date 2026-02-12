@@ -1,0 +1,131 @@
+{
+  "3": {
+    "inputs": {
+      "seed": 12345,
+      "steps": 28,
+      "cfg": 7.0,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 0.7,
+      "model": ["2", 0],
+      "positive": ["6", 0],
+      "negative": ["7", 0],
+      "latent_image": ["15", 0]
+    },
+    "class_type": "KSampler",
+    "_meta": { "title": "KSampler" }
+  },
+  "4": {
+    "inputs": {
+      "ckpt_name": "realisticVisionV60B1_v51HyperVAE.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": { "title": "Load Checkpoint" }
+  },
+  "2": {
+    "inputs": {
+      "lora_name": "flux-lora-product-light.safetensors",
+      "strength_model": 0.85,
+      "strength_clip": 0.85,
+      "model": ["4", 0],
+      "clip": ["4", 1]
+    },
+    "class_type": "LoraLoader",
+    "_meta": { "title": "Apply LoRA" }
+  },
+  "5": {
+    "inputs": {
+      "image": "product_rgb.png",
+      "upload": "image"
+    },
+    "class_type": "LoadImage",
+    "_meta": { "title": "Load RGB Product" }
+  },
+  "6": {
+    "inputs": {
+      "text": "a young woman with black hair in an aesthetic bathroom counter with natural morning light, skincare products, soft shadows, cozy atmosphere, photorealistic, 4k, UGC style, promoting a coffee scrub jar, realistic skin, shallow depth of field",
+      "clip": ["2", 1]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": { "title": "Positive Prompt" }
+  },
+  "7": {
+    "inputs": {
+      "text": "blurry, deformed, cartoon, anime, text, logo, watermark, low quality, bad anatomy, hijab, headscarf, multiple people, extra limbs, floating jar, unrealistic lighting, cluttered",
+      "clip": ["2", 1]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": { "title": "Negative Prompt" }
+  },
+  "8": {
+    "inputs": {
+      "image": "product_mask.png",
+      "upload": "image"
+    },
+    "class_type": "LoadImage",
+    "_meta": { "title": "Load Mask" }
+  },
+  "9": {
+    "inputs": {
+      "width": 1024,
+      "height": 1024,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": { "title": "Empty Latent" }
+  },
+  "10": {
+    "inputs": {
+      "image": ["8", 0],
+      "channel": "red"
+    },
+    "class_type": "ImageToMask",
+    "_meta": { "title": "Convert Mask to Binary" }
+  },
+  "11": {
+    "inputs": {
+      "mask": ["10", 0],
+      "grow_mask_by": 6
+    },
+    "class_type": "GrowMask",
+    "_meta": { "title": "Expand Mask Edges" }
+  },
+  "12": {
+    "inputs": {
+      "samples": ["9", 0],
+      "mask": ["11", 0]
+    },
+    "class_type": "SetLatentNoiseMask",
+    "_meta": { "title": "Apply Inpaint Mask" }
+  },
+  "15": {
+    "inputs": {
+      "samples": ["12", 0]
+    },
+    "class_type": "LatentUpscale",
+    "inputs": {
+      "upscale_method": "nearest-exact",
+      "width": 1024,
+      "height": 1024,
+      "crop": "disabled",
+      "samples": ["12", 0]
+    },
+    "class_type": "LatentUpscale",
+    "_meta": { "title": "Ensure Size (Optional)" }
+  },
+  "13": {
+    "inputs": {
+      "samples": ["3", 0],
+      "vae": ["4", 2]
+    },
+    "class_type": "VAEDecode",
+    "_meta": { "title": "VAE Decode" }
+  },
+  "14": {
+    "inputs": {
+      "images": ["13", 0]
+    },
+    "class_type": "PreviewImage",
+    "_meta": { "title": "Preview" }
+  }
+}

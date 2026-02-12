@@ -1,0 +1,207 @@
+{
+  "last_node_id": 60,
+  "last_link_id": 85,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "CheckpointLoaderSimple",
+      "pos": [0, 0],
+      "size": [315, 98],
+      "flags": {},
+      "title": "💾 Load FLUX.1 [Dev]"
+    },
+    {
+      "id": 2,
+      "type": "VHS_LoadVideo",
+      "pos": [0, 150],
+      "size": [315, 200],
+      "flags": {},
+      "widgets_values": ["source_action_video.mp4", 0, 0, 0, 30],
+      "title": "🎬 SOURCE VIDEO (Vous qui tenez un objet)"
+    },
+    {
+      "id": 3,
+      "type": "LoadImage",
+      "pos": [0, 400],
+      "size": [315, 314],
+      "flags": {},
+      "widgets_values": ["product_reference.png"],
+      "title": "📦 PRODUIT REFERENCE (Détouré)"
+    },
+    {
+      "id": 4,
+      "type": "LoadImage",
+      "pos": [0, 750],
+      "size": [315, 314],
+      "flags": {},
+      "widgets_values": ["character_reference.png"],
+      "title": "👤 PERSONNAGE REFERENCE"
+    },
+    {
+      "id": 5,
+      "type": "ControlNetLoader",
+      "pos": [400, 0],
+      "size": [315, 58],
+      "flags": {},
+      "widgets_values": ["flux_union_controlnet.safetensors"],
+      "title": "🎮 Load ControlNet Union (Pro)"
+    },
+    {
+      "id": 6,
+      "type": "AII_Preprocessor",
+      "pos": [400, 150],
+      "size": [315, 100],
+      "flags": {},
+      "inputs": [{"name": "image", "link": 2}],
+      "widgets_values": ["depth_anything_v2", 1024],
+      "title": "👁️ Depth Preprocessor (Garde la forme Main/Objet)"
+    },
+    {
+      "id": 7,
+      "type": "ControlNetApply",
+      "pos": [800, 150],
+      "size": [315, 150],
+      "flags": {},
+      "inputs": [
+        {"name": "conditioning", "link": 12},
+        {"name": "control_net", "link": 5},
+        {"name": "image", "link": 6}
+      ],
+      "widgets_values": [0.65],
+      "title": "🔒 Lock Grip & Motion (Strength 0.65)"
+    },
+    {
+      "id": 8,
+      "type": "IPAdapterModelLoader",
+      "pos": [400, 400],
+      "size": [315, 58],
+      "flags": {},
+      "title": "🔌 IP-Adapter Plus FLUX"
+    },
+    {
+      "id": 9,
+      "type": "IPAdapterApply",
+      "pos": [800, 400],
+      "size": [315, 200],
+      "flags": {},
+      "inputs": [
+        {"name": "ipadapter", "link": 8},
+        {"name": "model", "link": 1},
+        {"name": "image", "link": 3},
+        {"name": "attn_mask", "link": 15}
+      ],
+      "widgets_values": [0.90, "channel", "composition"],
+      "title": "💉 Inject Product Only (Masked)"
+    },
+    {
+      "id": 10,
+      "type": "IPAdapterApply",
+      "pos": [800, 650],
+      "size": [315, 200],
+      "flags": {},
+      "inputs": [
+        {"name": "ipadapter", "link": 8},
+        {"name": "model", "link": 9},
+        {"name": "image", "link": 4}
+      ],
+      "widgets_values": [0.80, "linear", "style transfer"],
+      "title": "👤 Inject Character Identity"
+    },
+    {
+      "id": 11,
+      "type": "Sam2ModelLoader",
+      "pos": [400, 900],
+      "size": [315, 58],
+      "flags": {},
+      "title": "✂️ Load SAM2 (Segment Anything)"
+    },
+    {
+      "id": 12,
+      "type": "Sam2AutoSegmentation",
+      "pos": [400, 1000],
+      "size": [315, 150],
+      "flags": {},
+      "inputs": [
+        {"name": "images", "link": 2},
+        {"name": "sam2_model", "link": 11}
+      ],
+      "widgets_values": ["bottle, jar, can, product", 0.5],
+      "outputs": [{"name": "MASK", "links": [15]}],
+      "title": "🎯 Auto-Detect Product in Video"
+    },
+    {
+      "id": 13,
+      "type": "KSampler",
+      "pos": [1200, 300],
+      "size": [315, 300],
+      "flags": {},
+      "inputs": [
+        {"name": "model", "link": 10},
+        {"name": "latent_image", "link": 20},
+        {"name": "positive", "link": 7},
+        {"name": "negative", "link": 21}
+      ],
+      "widgets_values": [
+        8675309, "fixed", 25, 4.0, "euler", "simple", 0.55
+      ],
+      "title": "🎲 Img2Img Sampler (Denoise 0.55)"
+    },
+    {
+      "id": 14,
+      "type": "VAEEncode",
+      "pos": [800, 0],
+      "size": [315, 100],
+      "flags": {},
+      "inputs": [
+        {"name": "pixels", "link": 2},
+        {"name": "vae", "link": 1}
+      ],
+      "outputs": [{"name": "LATENT", "links": [20]}],
+      "title": "🎞️ Encode Source Video"
+    },
+    {
+      "id": 15,
+      "type": "Note",
+      "pos": [-400, 0],
+      "size": [350, 1000],
+      "flags": {},
+      "title": "📝 GUIDE INTERACTION PRODUIT",
+      "widgets_values": [
+        "🔥 LA CLÉ: VID2VID + CONTROLNET UNION\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nPour que le perso 'tienne' le produit, on ne génère pas de zéro.\nOn triche intelligemment :\n\n1. SOURCE VIDEO (Node 2):\n   Filmez-vous (ou prenez un stock footage) en train\n   de tenir une bouteille générique de même forme.\n   C'est le 'Driver'.\n\n2. CONTROLNET DEPTH (Node 6-7):\n   Analyse la profondeur de votre main et de l'objet.\n   Force FLUX à respecter la position des doigts.\n   Strength 0.65 = liberté de changer la texture mais\n   garde la forme physique.\n\n3. SAM2 TRACKING (Node 12):\n   Détecte automatiquement 'bottle' ou 'jar' dans la vidéo.\n   Crée un masque dynamique qui suit l'objet.\n\n4. DOUBLE IP-ADAPTER (Node 9-10):\n   • Slot 1: Injecte votre PRODUIT uniquement dans le masque SAM2.\n   • Slot 2: Injecte votre PERSONNAGE sur tout le reste.\n\n5. DENOISE (Node 13):\n   Réglez sur 0.55 - 0.60.\n   • Trop bas (0.3) = on voit trop la vidéo originale.\n   • Trop haut (0.8) = les doigts deviennent bizarres.\n   • 0.55 est le sweet spot pour FLUX.\n\n💡 ASTUCE PRO:\nSi le produit est complexe (ex: texte spécifique),\nutilisez un workflow 'Inpaint' pur sur le masque produit\nAPRÈS la génération du personnage.\n"
+      ]
+    },
+    {
+      "id": 16,
+      "type": "CLIPTextEncode",
+      "pos": [800, 900],
+      "size": [400, 200],
+      "flags": {},
+      "widgets_values": [
+        "cinematic video of [PERSONNAGE] holding a [TYPE PRODUIT], applying cream on face, detailed hands, realistic skin texture, 4k, high quality"
+      ],
+      "outputs": [{"name": "CONDITIONING", "links": [12]}],
+      "title": "✍️ Prompt Action"
+    },
+    {
+      "id": 17,
+      "type": "VHS_VideoCombine",
+      "pos": [1600, 300],
+      "size": [315, 200],
+      "flags": {},
+      "inputs": [{"name": "images", "link": 30}],
+      "title": "🎬 Export Interaction Video"
+    }
+  ],
+  "links": [
+    [12, 16, 0, 7, 0, "CONDITIONING"],
+    [15, 12, 0, 9, 3, "MASK"],
+    [20, 14, 0, 13, 1, "LATENT"],
+    [30, 13, 0, 17, 0, "IMAGE"]
+  ],
+  "groups": [
+    {"title": "🎥 INPUTS", "bounding": [-50, -50, 400, 1200], "color": "#333"},
+    {"title": "🎮 CONTROL & MASKING", "bounding": [380, -50, 400, 1200], "color": "#456"},
+    {"title": "💉 INJECTION", "bounding": [780, 250, 350, 650], "color": "#633"}
+  ],
+  "version": 0.4
+}

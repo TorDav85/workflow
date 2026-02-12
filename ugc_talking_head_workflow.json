@@ -1,0 +1,495 @@
+{
+  "last_node_id": 45,
+  "last_link_id": 80,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "CheckpointLoaderSimple",
+      "pos": [50, 100],
+      "size": {"0": 315, "1": 98},
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "outputs": [
+        {"name": "MODEL", "type": "MODEL", "links": [1], "slot_index": 0},
+        {"name": "CLIP", "type": "CLIP", "links": [2, 3], "slot_index": 1},
+        {"name": "VAE", "type": "VAE", "links": [4], "slot_index": 2}
+      ],
+      "properties": {"Node name for S&R": "CheckpointLoaderSimple"},
+      "widgets_values": ["flux1-dev-fp8.safetensors"]
+    },
+    {
+      "id": 2,
+      "type": "CLIPTextEncode",
+      "pos": [400, 100],
+      "size": {"0": 400, "1": 200},
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": 2}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [5], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "CLIPTextEncode"},
+      "widgets_values": ["professional portrait of a 28 year old woman, centered face, neutral expression with slight smile, soft studio lighting, natural makeup, clean background, 4K, high detail, realistic skin texture, photorealistic"]
+    },
+    {
+      "id": 3,
+      "type": "CLIPTextEncode",
+      "pos": [400, 350],
+      "size": {"0": 400, "1": 200},
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": 3}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [6], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "CLIPTextEncode"},
+      "widgets_values": ["blurry, low quality, distorted face, multiple faces, text, watermark, bad anatomy, deformed"]
+    },
+    {
+      "id": 4,
+      "type": "EmptyLatentImage",
+      "pos": [400, 600],
+      "size": {"0": 315, "1": 106},
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "outputs": [
+        {"name": "LATENT", "type": "LATENT", "links": [7], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "EmptyLatentImage"},
+      "widgets_values": [1024, 1024, 1]
+    },
+    {
+      "id": 5,
+      "type": "KSampler",
+      "pos": [850, 100],
+      "size": {"0": 315, "1": 262},
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {"name": "model", "type": "MODEL", "link": 1},
+        {"name": "positive", "type": "CONDITIONING", "link": 5},
+        {"name": "negative", "type": "CONDITIONING", "link": 6},
+        {"name": "latent_image", "type": "LATENT", "link": 7}
+      ],
+      "outputs": [
+        {"name": "LATENT", "type": "LATENT", "links": [8], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "KSampler"},
+      "widgets_values": [42, "randomize", 20, 3.5, "euler", "normal", 1]
+    },
+    {
+      "id": 6,
+      "type": "VAEDecode",
+      "pos": [1200, 100],
+      "size": {"0": 210, "1": 46},
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {"name": "samples", "type": "LATENT", "link": 8},
+        {"name": "vae", "type": "VAE", "link": 4}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [9, 10], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "VAEDecode"}
+    },
+    {
+      "id": 7,
+      "type": "PreviewImage",
+      "pos": [1450, 100],
+      "size": {"0": 300, "1": 300},
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 9}
+      ],
+      "properties": {"Node name for S&R": "PreviewImage"}
+    },
+    {
+      "id": 10,
+      "type": "UltimateSDUpscale",
+      "pos": [50, 800],
+      "size": {"0": 315, "1": 614},
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {"name": "image", "type": "IMAGE", "link": 10},
+        {"name": "model", "type": "MODEL", "link": 20},
+        {"name": "positive", "type": "CONDITIONING", "link": 21},
+        {"name": "negative", "type": "CONDITIONING", "link": 22},
+        {"name": "vae", "type": "VAE", "link": 23},
+        {"name": "upscale_model", "type": "UPSCALE_MODEL", "link": 24}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [11], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "UltimateSDUpscale"},
+      "widgets_values": [2, 42, 20, 8, "euler", "normal", 0.3, "Linear", 512, 512, 8, 32, "None", 1, 64, 8, 16, true, false]
+    },
+    {
+      "id": 11,
+      "type": "UpscaleModelLoader",
+      "pos": [50, 1500],
+      "size": {"0": 315, "1": 58},
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "outputs": [
+        {"name": "UPSCALE_MODEL", "type": "UPSCALE_MODEL", "links": [24], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "UpscaleModelLoader"},
+      "widgets_values": ["4x-UltraSharp.pth"]
+    },
+    {
+      "id": 12,
+      "type": "CheckpointLoaderSimple",
+      "pos": [50, 1600],
+      "size": {"0": 315, "1": 98},
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "outputs": [
+        {"name": "MODEL", "type": "MODEL", "links": [20], "slot_index": 0},
+        {"name": "CLIP", "type": "CLIP", "links": [25, 26], "slot_index": 1},
+        {"name": "VAE", "type": "VAE", "links": [23], "slot_index": 2}
+      ],
+      "properties": {"Node name for S&R": "CheckpointLoaderSimple"},
+      "widgets_values": ["flux1-dev-fp8.safetensors"]
+    },
+    {
+      "id": 13,
+      "type": "CLIPTextEncode",
+      "pos": [400, 1600],
+      "size": {"0": 400, "1": 150},
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": 25}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [21], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "CLIPTextEncode"},
+      "widgets_values": ["high quality, detailed skin texture, sharp focus, 4K, photorealistic"]
+    },
+    {
+      "id": 14,
+      "type": "CLIPTextEncode",
+      "pos": [400, 1800],
+      "size": {"0": 400, "1": 150},
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": 26}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [22], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "CLIPTextEncode"},
+      "widgets_values": ["blurry, low quality, artifacts"]
+    },
+    {
+      "id": 15,
+      "type": "PreviewImage",
+      "pos": [450, 800],
+      "size": {"0": 400, "1": 400},
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 11}
+      ],
+      "properties": {"Node name for S&R": "PreviewImage"}
+    },
+    {
+      "id": 20,
+      "type": "LoadAudio",
+      "pos": [900, 800],
+      "size": {"0": 315, "1": 58},
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "outputs": [
+        {"name": "AUDIO", "type": "AUDIO", "links": [30], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "LoadAudio"},
+      "widgets_values": ["audio.wav"]
+    },
+    {
+      "id": 21,
+      "type": "Note",
+      "pos": [900, 900],
+      "size": {"0": 315, "1": 100},
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "properties": {"text": "Alternative: Use F5-TTS node here\nInput: Text prompt\nOutput: Generated audio file"},
+      "widgets_values": ["Alternative: Use F5-TTS node here\nInput: Text prompt\nOutput: Generated audio file"]
+    },
+    {
+      "id": 30,
+      "type": "WanVideoSampler",
+      "pos": [900, 1050],
+      "size": {"0": 400, "1": 350},
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {"name": "image", "type": "IMAGE", "link": 40},
+        {"name": "audio", "type": "AUDIO", "link": 30},
+        {"name": "model", "type": "WANMODEL", "link": 41}
+      ],
+      "outputs": [
+        {"name": "VIDEO", "type": "IMAGE", "links": [42], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "WanVideoSampler"},
+      "widgets_values": [
+        512,
+        512,
+        100,
+        42,
+        "randomize",
+        20,
+        3.5,
+        "euler",
+        "normal",
+        1,
+        true
+      ]
+    },
+    {
+      "id": 31,
+      "type": "LoadWanModel",
+      "pos": [900, 1450],
+      "size": {"0": 315, "1": 58},
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "outputs": [
+        {"name": "WANMODEL", "type": "WANMODEL", "links": [41], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "LoadWanModel"},
+      "widgets_values": ["wan2.2_moe.safetensors"]
+    },
+    {
+      "id": 32,
+      "type": "ImageScale",
+      "pos": [900, 1550],
+      "size": {"0": 315, "1": 130},
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "inputs": [
+        {"name": "image", "type": "IMAGE", "link": 11}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [40], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "ImageScale"},
+      "widgets_values": ["nearest-exact", 512, 512, "disabled"]
+    },
+    {
+      "id": 33,
+      "type": "VHS_VideoCombine",
+      "pos": [1350, 1050],
+      "size": {"0": 315, "1": 300},
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 42},
+        {"name": "audio", "type": "AUDIO", "link": 43}
+      ],
+      "outputs": [
+        {"name": "Filenames", "type": "VHS_FILENAMES", "links": null}
+      ],
+      "properties": {"Node name for S&R": "VHS_VideoCombine"},
+      "widgets_values": {
+        "frame_rate": 24,
+        "loop_count": 0,
+        "filename_prefix": "ugc_talking_head",
+        "format": "video/h264-mp4",
+        "pix_fmt": "yuv420p",
+        "crf": 19,
+        "save_metadata": true,
+        "pingpong": false,
+        "save_output": true,
+        "videopreview": {
+          "hidden": false,
+          "paused": false,
+          "params": {
+            "filename": "ugc_talking_head_00001.mp4",
+            "subfolder": "",
+            "type": "output",
+            "format": "video/h264-mp4"
+          }
+        }
+      }
+    },
+    {
+      "id": 34,
+      "type": "LoadAudio",
+      "pos": [1350, 1400],
+      "size": {"0": 315, "1": 58},
+      "flags": {},
+      "order": 19,
+      "mode": 0,
+      "outputs": [
+        {"name": "AUDIO", "type": "AUDIO", "links": [43], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "LoadAudio"},
+      "widgets_values": ["audio.wav"]
+    },
+    {
+      "id": 40,
+      "type": "Note",
+      "pos": [50, 50],
+      "size": {"0": 400, "1": 100},
+      "flags": {},
+      "order": 20,
+      "mode": 0,
+      "properties": {
+        "text": "=== ÉTAPE 1-2: Portrait Generation ===\nFLUX Dev génère le portrait haute qualité\nModifier le prompt pour personnaliser le personnage"
+      },
+      "widgets_values": ["=== ÉTAPE 1-2: Portrait Generation ===\nFLUX Dev génère le portrait haute qualité\nModifier le prompt pour personnaliser le personnage"]
+    },
+    {
+      "id": 41,
+      "type": "Note",
+      "pos": [50, 750],
+      "size": {"0": 400, "1": 100},
+      "flags": {},
+      "order": 21,
+      "mode": 0,
+      "properties": {
+        "text": "=== ÉTAPE 3: Upscale Réaliste ===\nUltimate SD Upscale + 4x-UltraSharp\nPasse de 1024x1024 à 2048x2048"
+      },
+      "widgets_values": ["=== ÉTAPE 3: Upscale Réaliste ===\nUltimate SD Upscale + 4x-UltraSharp\nPasse de 1024x1024 à 2048x2048"]
+    },
+    {
+      "id": 42,
+      "type": "Note",
+      "pos": [900, 750],
+      "size": {"0": 400, "1": 100},
+      "flags": {},
+      "order": 22,
+      "mode": 0,
+      "properties": {
+        "text": "=== ÉTAPE 4: Audio Loading ===\nCharger l'audio généré par F5-TTS ou autre TTS local\nOu utiliser un node F5-TTS directement si disponible"
+      },
+      "widgets_values": ["=== ÉTAPE 4: Audio Loading ===\nCharger l'audio généré par F5-TTS ou autre TTS local\nOu utiliser un node F5-TTS directement si disponible"]
+    },
+    {
+      "id": 43,
+      "type": "Note",
+      "pos": [900, 1000],
+      "size": {"0": 400, "1": 100},
+      "flags": {},
+      "order": 23,
+      "mode": 0,
+      "properties": {
+        "text": "=== ÉTAPE 5: InfiniteTalk Lip-sync ===\nWanVideo avec InfiniteTalk intégré\nGénère talking head avec expressions faciales"
+      },
+      "widgets_values": ["=== ÉTAPE 5: InfiniteTalk Lip-sync ===\nWanVideo avec InfiniteTalk intégré\nGénère talking head avec expressions faciales"]
+    },
+    {
+      "id": 44,
+      "type": "Note",
+      "pos": [1350, 1000],
+      "size": {"0": 400, "1": 120},
+      "flags": {},
+      "order": 24,
+      "mode": 0,
+      "properties": {
+        "text": "=== ÉTAPE 6-7: Export Final ===\nCombine vidéo + audio en MP4\nPour captions et upscale vidéo final, utiliser:\n- FFmpeg pour SRT overlay\n- Topaz ou Real-ESRGAN Video pour upscale"
+      },
+      "widgets_values": ["=== ÉTAPE 6-7: Export Final ===\nCombine vidéo + audio en MP4\nPour captions et upscale vidéo final, utiliser:\n- FFmpeg pour SRT overlay\n- Topaz ou Real-ESRGAN Video pour upscale"]
+    },
+    {
+      "id": 45,
+      "type": "Note",
+      "pos": [50, 2000],
+      "size": {"0": 600, "1": 200},
+      "flags": {},
+      "order": 25,
+      "mode": 0,
+      "properties": {
+        "text": "=== CONFIGURATION VRAM ===\n\nL40S (48GB) optimal settings:\n- FLUX Dev: fp8 pour économiser VRAM\n- WanVideo: 512x512, 100 frames max (12-15 sec)\n- Ultimate SD Upscale: tile size 512\n\nPour GPU plus petit (24GB):\n- Réduire à 64 frames (8 sec)\n- Tile size 256 pour upscale\n- Utiliser FLUX Schnell au lieu de Dev"
+      },
+      "widgets_values": ["=== CONFIGURATION VRAM ===\n\nL40S (48GB) optimal settings:\n- FLUX Dev: fp8 pour économiser VRAM\n- WanVideo: 512x512, 100 frames max (12-15 sec)\n- Ultimate SD Upscale: tile size 512\n\nPour GPU plus petit (24GB):\n- Réduire à 64 frames (8 sec)\n- Tile size 256 pour upscale\n- Utiliser FLUX Schnell au lieu de Dev"]
+    }
+  ],
+  "links": [
+    [1, 1, 0, 5, 0, "MODEL"],
+    [2, 1, 1, 2, 0, "CLIP"],
+    [3, 1, 1, 3, 0, "CLIP"],
+    [4, 1, 2, 6, 1, "VAE"],
+    [5, 2, 0, 5, 1, "CONDITIONING"],
+    [6, 3, 0, 5, 2, "CONDITIONING"],
+    [7, 4, 0, 5, 3, "LATENT"],
+    [8, 5, 0, 6, 0, "LATENT"],
+    [9, 6, 0, 7, 0, "IMAGE"],
+    [10, 6, 0, 10, 0, "IMAGE"],
+    [11, 10, 0, 15, 0, "IMAGE"],
+    [20, 12, 0, 10, 1, "MODEL"],
+    [21, 13, 0, 10, 2, "CONDITIONING"],
+    [22, 14, 0, 10, 3, "CONDITIONING"],
+    [23, 12, 2, 10, 4, "VAE"],
+    [24, 11, 0, 10, 5, "UPSCALE_MODEL"],
+    [25, 12, 1, 13, 0, "CLIP"],
+    [26, 12, 1, 14, 0, "CLIP"],
+    [30, 20, 0, 30, 1, "AUDIO"],
+    [40, 32, 0, 30, 0, "IMAGE"],
+    [41, 31, 0, 30, 2, "WANMODEL"],
+    [42, 30, 0, 33, 0, "IMAGE"],
+    [43, 34, 0, 33, 1, "AUDIO"]
+  ],
+  "groups": [
+    {
+      "title": "ÉTAPE 2: Portrait Generation (FLUX)",
+      "bounding": [25, 25, 1750, 700],
+      "color": "#3f789e",
+      "font_size": 24
+    },
+    {
+      "title": "ÉTAPE 3: Upscale Portrait",
+      "bounding": [25, 725, 850, 750],
+      "color": "#8A5A2D",
+      "font_size": 24
+    },
+    {
+      "title": "ÉTAPE 4-5: Audio + Talking Head (InfiniteTalk)",
+      "bounding": [875, 725, 850, 800],
+      "color": "#5A8A2D",
+      "font_size": 24
+    },
+    {
+      "title": "ÉTAPE 6: Video Export",
+      "bounding": [1325, 975, 375, 500],
+      "color": "#8A2D5A",
+      "font_size": 24
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.8,
+      "offset": [0, 0]
+    }
+  },
+  "version": 0.4
+}

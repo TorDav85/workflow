@@ -1,0 +1,90 @@
+{
+  "projectTitle": "Consistent Character Template (Copy)",
+  "exportedAt": "2026-02-09T15:51:34.715Z",
+  "files": [
+    {
+      "type": "image",
+      "filename": "000_upload_uploadedImage.png",
+      "nodeType": "upload",
+      "nodeId": "upload-1770455744034"
+    },
+    {
+      "type": "image",
+      "filename": "001_imageGen_image.png",
+      "nodeType": "imageGen",
+      "nodeId": "imageGen-1770455786336"
+    },
+    {
+      "type": "image",
+      "filename": "002_imageGen_image.png",
+      "nodeType": "imageGen",
+      "nodeId": "imageGen-1770456003537"
+    },
+    {
+      "type": "image",
+      "filename": "003_imageGen_image.png",
+      "nodeType": "imageGen",
+      "nodeId": "imageGen-1770456055139"
+    },
+    {
+      "type": "image",
+      "filename": "004_imageGen_image.png",
+      "nodeType": "imageGen",
+      "nodeId": "imageGen-1770457003185"
+    },
+    {
+      "type": "image",
+      "filename": "005_upload_uploadedImage.png",
+      "nodeType": "upload",
+      "nodeId": "upload-1770458610397"
+    },
+    {
+      "type": "image",
+      "filename": "006_imageGen_image.png",
+      "nodeType": "imageGen",
+      "nodeId": "imageGen-1770458627798"
+    },
+    {
+      "type": "image",
+      "filename": "007_imageGen_image.png",
+      "nodeType": "imageGen",
+      "nodeId": "imageGen-1770458712249"
+    },
+    {
+      "type": "image",
+      "filename": "008_imageGen_image.png",
+      "nodeType": "imageGen",
+      "nodeId": "imageGen-1770459008265"
+    },
+    {
+      "type": "image",
+      "filename": "009_imageGen_image.png",
+      "nodeType": "imageGen",
+      "nodeId": "imageGen-1770459255551"
+    },
+    {
+      "type": "image",
+      "filename": "010_imageGen_image.png",
+      "nodeType": "imageGen",
+      "nodeId": "imageGen-1770459782354"
+    },
+    {
+      "type": "image",
+      "filename": "011_imageGen_image.png",
+      "nodeType": "imageGen",
+      "nodeId": "imageGen-1770460364029"
+    },
+    {
+      "type": "image",
+      "filename": "012_imageGen_image.png",
+      "nodeType": "imageGen",
+      "nodeId": "imageGen-1770460425920"
+    },
+    {
+      "type": "image",
+      "filename": "013_imageGen_image.png",
+      "nodeType": "imageGen",
+      "nodeId": "imageGen-1770460482619"
+    }
+  ]
+}

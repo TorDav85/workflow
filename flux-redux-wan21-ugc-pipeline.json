@@ -1,0 +1,767 @@
+{
+  "id": "flux-redux-wan21-ugc-pipeline",
+  "revision": 1,
+  "last_node_id": 50,
+  "last_link_id": 70,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "LoadImage",
+      "pos": [-1200, -400],
+      "size": [300, 314],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [1, 2], "slot_index": 0},
+        {"name": "MASK", "type": "MASK", "links": null}
+      ],
+      "title": "📦 Product Image",
+      "properties": {"Node name for S&R": "LoadImage"},
+      "widgets_values": ["product.png", "image"],
+      "color": "#322",
+      "bgcolor": "#533"
+    },
+    {
+      "id": 2,
+      "type": "LoadImage",
+      "pos": [-1200, 0],
+      "size": [300, 314],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [3], "slot_index": 0},
+        {"name": "MASK", "type": "MASK", "links": null}
+      ],
+      "title": "🖼️ Background Reference",
+      "properties": {"Node name for S&R": "LoadImage"},
+      "widgets_values": ["background.png", "image"],
+      "color": "#233",
+      "bgcolor": "#355"
+    },
+    {
+      "id": 3,
+      "type": "UNETLoader",
+      "pos": [-800, -500],
+      "size": [315, 82],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "MODEL", "type": "MODEL", "links": [10], "slot_index": 0}
+      ],
+      "title": "🧠 FLUX Fill Model",
+      "properties": {"Node name for S&R": "UNETLoader"},
+      "widgets_values": ["flux1-fill-dev.safetensors", "fp8_e4m3fn"],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 4,
+      "type": "VAELoader",
+      "pos": [-800, -380],
+      "size": [315, 58],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "VAE", "type": "VAE", "links": [11, 12], "slot_index": 0}
+      ],
+      "title": "🎨 FLUX VAE",
+      "properties": {"Node name for S&R": "VAELoader"},
+      "widgets_values": ["ae.safetensors"],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 5,
+      "type": "DualCLIPLoader",
+      "pos": [-800, -280],
+      "size": [315, 106],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "CLIP", "type": "CLIP", "links": [13], "slot_index": 0}
+      ],
+      "title": "📝 FLUX CLIP (Dual)",
+      "properties": {"Node name for S&R": "DualCLIPLoader"},
+      "widgets_values": ["clip_l.safetensors", "t5xxl_fp8_e4m3fn.safetensors", "flux"],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 6,
+      "type": "CLIPVisionLoader",
+      "pos": [-800, -130],
+      "size": [315, 58],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "CLIP_VISION", "type": "CLIP_VISION", "links": [14], "slot_index": 0}
+      ],
+      "title": "👁️ CLIP Vision (SigCLIP)",
+      "properties": {"Node name for S&R": "CLIPVisionLoader"},
+      "widgets_values": ["sigclip_vision_patch14_384.safetensors"],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 7,
+      "type": "StyleModelLoader",
+      "pos": [-800, -30],
+      "size": [315, 58],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "STYLE_MODEL", "type": "STYLE_MODEL", "links": [15], "slot_index": 0}
+      ],
+      "title": "✨ FLUX Redux Style Model",
+      "properties": {"Node name for S&R": "StyleModelLoader"},
+      "widgets_values": ["flux1-redux-dev.safetensors"],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 8,
+      "type": "CLIPTextEncodeFlux",
+      "pos": [-400, -500],
+      "size": [400, 200],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": 13}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [16, 17], "slot_index": 0}
+      ],
+      "title": "💬 FLUX Prompt (Product Scene)",
+      "properties": {"Node name for S&R": "CLIPTextEncodeFlux"},
+      "widgets_values": ["professional product photography, clean background, soft studio lighting, high quality, 4k, commercial photo", "", 4],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 9,
+      "type": "CLIPVisionEncode",
+      "pos": [-400, -250],
+      "size": [350, 50],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip_vision", "type": "CLIP_VISION", "link": 14},
+        {"name": "image", "type": "IMAGE", "link": 3}
+      ],
+      "outputs": [
+        {"name": "CLIP_VISION_OUTPUT", "type": "CLIP_VISION_OUTPUT", "links": [18], "slot_index": 0}
+      ],
+      "title": "🔍 Encode Background Style",
+      "properties": {"Node name for S&R": "CLIPVisionEncode"},
+      "widgets_values": [],
+      "color": "#233",
+      "bgcolor": "#355"
+    },
+    {
+      "id": 10,
+      "type": "StyleModelApply",
+      "pos": [-400, -150],
+      "size": [350, 70],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {"name": "conditioning", "type": "CONDITIONING", "link": 16},
+        {"name": "style_model", "type": "STYLE_MODEL", "link": 15},
+        {"name": "clip_vision_output", "type": "CLIP_VISION_OUTPUT", "link": 18}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [19], "slot_index": 0}
+      ],
+      "title": "🎨 Apply Redux Style",
+      "properties": {"Node name for S&R": "StyleModelApply"},
+      "widgets_values": [],
+      "color": "#323",
+      "bgcolor": "#535"
+    },
+    {
+      "id": 11,
+      "type": "ConditioningZeroOut",
+      "pos": [-400, -40],
+      "size": [350, 30],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {"name": "conditioning", "type": "CONDITIONING", "link": 17}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [20], "slot_index": 0}
+      ],
+      "title": "❌ Negative (Zero Out)",
+      "properties": {"Node name for S&R": "ConditioningZeroOut"},
+      "widgets_values": [],
+      "color": "#322",
+      "bgcolor": "#533"
+    },
+    {
+      "id": 12,
+      "type": "InpaintModelConditioning",
+      "pos": [50, -400],
+      "size": [350, 140],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {"name": "positive", "type": "CONDITIONING", "link": 19},
+        {"name": "negative", "type": "CONDITIONING", "link": 20},
+        {"name": "vae", "type": "VAE", "link": 11},
+        {"name": "pixels", "type": "IMAGE", "link": 1},
+        {"name": "mask", "type": "MASK", "link": 21}
+      ],
+      "outputs": [
+        {"name": "positive", "type": "CONDITIONING", "links": [22], "slot_index": 0},
+        {"name": "negative", "type": "CONDITIONING", "links": [23], "slot_index": 1},
+        {"name": "latent", "type": "LATENT", "links": [24], "slot_index": 2}
+      ],
+      "title": "🖌️ Inpaint Conditioning",
+      "properties": {"Node name for S&R": "InpaintModelConditioning"},
+      "widgets_values": [false],
+      "color": "#323",
+      "bgcolor": "#535"
+    },
+    {
+      "id": 13,
+      "type": "GrowMask",
+      "pos": [50, -550],
+      "size": [250, 100],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {"name": "mask", "type": "MASK", "link": 25}
+      ],
+      "outputs": [
+        {"name": "MASK", "type": "MASK", "links": [21], "slot_index": 0}
+      ],
+      "title": "📐 Grow Mask (Background)",
+      "properties": {"Node name for S&R": "GrowMask"},
+      "widgets_values": [20, false],
+      "color": "#332",
+      "bgcolor": "#553"
+    },
+    {
+      "id": 14,
+      "type": "InvertMask",
+      "pos": [50, -650],
+      "size": [200, 30],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [
+        {"name": "mask", "type": "MASK", "link": 26}
+      ],
+      "outputs": [
+        {"name": "MASK", "type": "MASK", "links": [25], "slot_index": 0}
+      ],
+      "title": "🔄 Invert Mask",
+      "properties": {"Node name for S&R": "InvertMask"},
+      "widgets_values": [],
+      "color": "#332",
+      "bgcolor": "#553"
+    },
+    {
+      "id": 15,
+      "type": "ImageToMask",
+      "pos": [50, -750],
+      "size": [200, 60],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "inputs": [
+        {"name": "image", "type": "IMAGE", "link": 2}
+      ],
+      "outputs": [
+        {"name": "MASK", "type": "MASK", "links": [26], "slot_index": 0}
+      ],
+      "title": "🎭 Auto Mask from Product",
+      "properties": {"Node name for S&R": "ImageToMask"},
+      "widgets_values": ["red"],
+      "color": "#332",
+      "bgcolor": "#553"
+    },
+    {
+      "id": 16,
+      "type": "KSampler",
+      "pos": [500, -450],
+      "size": [315, 262],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [
+        {"name": "model", "type": "MODEL", "link": 10},
+        {"name": "positive", "type": "CONDITIONING", "link": 22},
+        {"name": "negative", "type": "CONDITIONING", "link": 23},
+        {"name": "latent_image", "type": "LATENT", "link": 24}
+      ],
+      "outputs": [
+        {"name": "LATENT", "type": "LATENT", "links": [27], "slot_index": 0}
+      ],
+      "title": "🎲 FLUX Sampler",
+      "properties": {"Node name for S&R": "KSampler"},
+      "widgets_values": [123456789, "randomize", 30, 1, "deis", "beta", 1],
+      "color": "#323",
+      "bgcolor": "#535"
+    },
+    {
+      "id": 17,
+      "type": "VAEDecode",
+      "pos": [500, -140],
+      "size": [250, 50],
+      "flags": {},
+      "order": 19,
+      "mode": 0,
+      "inputs": [
+        {"name": "samples", "type": "LATENT", "link": 27},
+        {"name": "vae", "type": "VAE", "link": 12}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [28, 29, 50], "slot_index": 0}
+      ],
+      "title": "🖼️ Decode FLUX Image",
+      "properties": {"Node name for S&R": "VAEDecode"},
+      "widgets_values": [],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 18,
+      "type": "PreviewImage",
+      "pos": [500, -50],
+      "size": [300, 250],
+      "flags": {},
+      "order": 20,
+      "mode": 0,
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 28}
+      ],
+      "outputs": [],
+      "title": "👀 Preview FLUX Result",
+      "properties": {"Node name for S&R": "PreviewImage"},
+      "widgets_values": [],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 19,
+      "type": "SaveImage",
+      "pos": [850, -50],
+      "size": [300, 270],
+      "flags": {},
+      "order": 21,
+      "mode": 0,
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 29}
+      ],
+      "outputs": [],
+      "title": "💾 Save FLUX Image",
+      "properties": {"Node name for S&R": "SaveImage"},
+      "widgets_values": ["flux_redux_product"],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 20,
+      "type": "Note",
+      "pos": [-1200, -550],
+      "size": [700, 100],
+      "flags": {},
+      "order": 22,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "📋 FLUX REDUX + WAN 2.1 UGC PIPELINE",
+      "properties": {},
+      "widgets_values": ["🎬 PIPELINE COMPLET:\n1️⃣ FLUX Redux: Génère une image produit avec style/fond custom\n2️⃣ Wan 2.1 I2V: Anime l'image en vidéo UGC TikTok\n\n⚡ Tip: Utilisez une image produit sur fond blanc pour de meilleurs résultats de masquage"],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 30,
+      "type": "WanVideoModelLoader",
+      "pos": [1200, -500],
+      "size": [400, 200],
+      "flags": {},
+      "order": 30,
+      "mode": 0,
+      "inputs": [
+        {"name": "compile_args", "type": "WANCOMPILEARGS", "link": null, "shape": 7},
+        {"name": "block_swap_args", "type": "BLOCKSWAPARGS", "link": 60, "shape": 7},
+        {"name": "lora", "type": "WANVIDLORA", "link": null, "shape": 7}
+      ],
+      "outputs": [
+        {"name": "model", "type": "WANVIDEOMODEL", "links": [51], "slot_index": 0}
+      ],
+      "title": "🎬 Wan 2.1 Video Model (14B I2V)",
+      "properties": {"Node name for S&R": "WanVideoModelLoader"},
+      "widgets_values": ["wan2.1_i2v_480p_14B_fp8_e4m3fn.safetensors", "fp16_fast", "disabled", "offload_device", "sageattn", "default"],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 31,
+      "type": "WanVideoVAELoader",
+      "pos": [1200, -250],
+      "size": [350, 80],
+      "flags": {},
+      "order": 31,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "vae", "type": "WANVAE", "links": [52, 53], "slot_index": 0}
+      ],
+      "title": "🎨 Wan Video VAE",
+      "properties": {"Node name for S&R": "WanVideoVAELoader"},
+      "widgets_values": ["wan_2.1_vae.safetensors", "bf16"],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 32,
+      "type": "WanVideoTextEncoderLoader",
+      "pos": [1200, -130],
+      "size": [350, 100],
+      "flags": {},
+      "order": 32,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "text_encoder", "type": "WANTEXTENCODER", "links": [54], "slot_index": 0}
+      ],
+      "title": "📝 Text Encoder (UMT5)",
+      "properties": {"Node name for S&R": "WanVideoTextEncoderLoader"},
+      "widgets_values": ["umt5_xxl_fp8_e4m3fn_scaled.safetensors", "offload_device"],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 33,
+      "type": "WanVideoBlockSwap",
+      "pos": [1200, 20],
+      "size": [350, 130],
+      "flags": {},
+      "order": 33,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "block_swap_args", "type": "BLOCKSWAPARGS", "links": [60], "slot_index": 0}
+      ],
+      "title": "⚡ VRAM Optimization",
+      "properties": {"Node name for S&R": "WanVideoBlockSwap"},
+      "widgets_values": [20, 0, false, 4],
+      "color": "#332",
+      "bgcolor": "#553"
+    },
+    {
+      "id": 34,
+      "type": "WanVideoTextEncode",
+      "pos": [1700, -500],
+      "size": [450, 180],
+      "flags": {},
+      "order": 34,
+      "mode": 0,
+      "inputs": [
+        {"name": "text_encoder", "type": "WANTEXTENCODER", "link": 54}
+      ],
+      "outputs": [
+        {"name": "text_embeds", "type": "WANVIDEOTEXTEMBEDS", "links": [55], "slot_index": 0}
+      ],
+      "title": "✨ UGC Video Prompt",
+      "properties": {"Node name for S&R": "WanVideoTextEncode"},
+      "widgets_values": ["A person enthusiastically presenting a product to camera, holding it with both hands, natural movement, TikTok UGC style, authentic review, slight camera shake, engaging smile, product clearly visible, soft natural lighting, high quality 4k"],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 35,
+      "type": "WanVideoImageEncode",
+      "pos": [1700, -270],
+      "size": [350, 120],
+      "flags": {},
+      "order": 35,
+      "mode": 0,
+      "inputs": [
+        {"name": "vae", "type": "WANVAE", "link": 52},
+        {"name": "image", "type": "IMAGE", "link": 50}
+      ],
+      "outputs": [
+        {"name": "image_embeds", "type": "WANVIDIMAGE_EMBEDS", "links": [56], "slot_index": 0}
+      ],
+      "title": "🖼️ Encode FLUX Image → Wan",
+      "properties": {"Node name for S&R": "WanVideoImageEncode"},
+      "widgets_values": [0, 1],
+      "color": "#323",
+      "bgcolor": "#535"
+    },
+    {
+      "id": 36,
+      "type": "WanVideoSampler",
+      "pos": [2200, -450],
+      "size": [400, 350],
+      "flags": {},
+      "order": 36,
+      "mode": 0,
+      "inputs": [
+        {"name": "model", "type": "WANVIDEOMODEL", "link": 51},
+        {"name": "text_embeds", "type": "WANVIDEOTEXTEMBEDS", "link": 55},
+        {"name": "image_embeds", "type": "WANVIDIMAGE_EMBEDS", "link": 56},
+        {"name": "clip_vision_output", "type": "CLIP_VISION_OUTPUT", "link": null, "shape": 7}
+      ],
+      "outputs": [
+        {"name": "samples", "type": "LATENT", "links": [57], "slot_index": 0}
+      ],
+      "title": "🎲 Video Sampler",
+      "properties": {"Node name for S&R": "WanVideoSampler"},
+      "widgets_values": [832, 480, 81, 30, 6.0, "fixed", 12345, 1.0],
+      "color": "#323",
+      "bgcolor": "#535"
+    },
+    {
+      "id": 37,
+      "type": "WanVideoDecode",
+      "pos": [2700, -400],
+      "size": [300, 120],
+      "flags": {},
+      "order": 37,
+      "mode": 0,
+      "inputs": [
+        {"name": "vae", "type": "WANVAE", "link": 53},
+        {"name": "samples", "type": "LATENT", "link": 57}
+      ],
+      "outputs": [
+        {"name": "images", "type": "IMAGE", "links": [58, 59], "slot_index": 0}
+      ],
+      "title": "🎞️ Decode Video",
+      "properties": {"Node name for S&R": "WanVideoDecode"},
+      "widgets_values": [true, 16, 8],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 38,
+      "type": "VHS_VideoCombine",
+      "pos": [3100, -450],
+      "size": [400, 350],
+      "flags": {},
+      "order": 38,
+      "mode": 0,
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 58},
+        {"name": "audio", "type": "AUDIO", "link": null, "shape": 7},
+        {"name": "meta_batch", "type": "VHS_BatchManager", "link": null, "shape": 7},
+        {"name": "vae", "type": "VAE", "link": null, "shape": 7}
+      ],
+      "outputs": [
+        {"name": "Filenames", "type": "VHS_FILENAMES", "links": null}
+      ],
+      "title": "💾 Save UGC Video (MP4)",
+      "properties": {"Node name for S&R": "VHS_VideoCombine"},
+      "widgets_values": {
+        "frame_rate": 16,
+        "loop_count": 0,
+        "filename_prefix": "ugc_flux_wan",
+        "format": "video/h264-mp4",
+        "pix_fmt": "yuv420p",
+        "crf": 19,
+        "save_metadata": true,
+        "pingpong": false,
+        "save_output": true,
+        "videopreview": {"hidden": false, "paused": false, "params": {"filename": "ugc_flux_wan_00001.mp4", "subfolder": "", "type": "output", "format": "video/h264-mp4", "frame_rate": 16}}
+      },
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 39,
+      "type": "PreviewImage",
+      "pos": [3100, -50],
+      "size": [400, 300],
+      "flags": {},
+      "order": 39,
+      "mode": 0,
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 59}
+      ],
+      "outputs": [],
+      "title": "👀 Preview Video Frames",
+      "properties": {"Node name for S&R": "PreviewImage"},
+      "widgets_values": [],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 40,
+      "type": "Note",
+      "pos": [1200, -650],
+      "size": [500, 100],
+      "flags": {},
+      "order": 40,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "🎬 WAN 2.1 VIDEO GENERATION",
+      "properties": {},
+      "widgets_values": ["L'image générée par FLUX Redux est automatiquement envoyée à Wan 2.1\npour créer une vidéo UGC animée.\n\n📐 832x480 | 🎞️ 81 frames (~5 sec) | 🎯 CFG 6.0"],
+      "color": "#324",
+      "bgcolor": "#546"
+    },
+    {
+      "id": 41,
+      "type": "Note",
+      "pos": [-800, 80],
+      "size": [400, 150],
+      "flags": {},
+      "order": 41,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "📁 FLUX Models Required",
+      "properties": {},
+      "widgets_values": ["• flux1-fill-dev.safetensors (unet/)\n• ae.safetensors (vae/)\n• clip_l.safetensors (clip/)\n• t5xxl_fp8_e4m3fn.safetensors (clip/)\n• sigclip_vision_patch14_384.safetensors (clip_vision/)\n• flux1-redux-dev.safetensors (style_models/)"],
+      "color": "#324",
+      "bgcolor": "#546"
+    },
+    {
+      "id": 42,
+      "type": "Note",
+      "pos": [1600, 80],
+      "size": [400, 120],
+      "flags": {},
+      "order": 42,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "📁 Wan 2.1 Models Required",
+      "properties": {},
+      "widgets_values": ["• wan2.1_i2v_480p_14B_fp8_e4m3fn.safetensors\n• wan_2.1_vae.safetensors\n• umt5_xxl_fp8_e4m3fn_scaled.safetensors"],
+      "color": "#324",
+      "bgcolor": "#546"
+    }
+  ],
+  "links": [
+    [1, 1, 0, 15, 0, "IMAGE"],
+    [2, 1, 0, 12, 3, "IMAGE"],
+    [3, 2, 0, 9, 1, "IMAGE"],
+    [10, 3, 0, 16, 0, "MODEL"],
+    [11, 4, 0, 12, 2, "VAE"],
+    [12, 4, 0, 17, 1, "VAE"],
+    [13, 5, 0, 8, 0, "CLIP"],
+    [14, 6, 0, 9, 0, "CLIP_VISION"],
+    [15, 7, 0, 10, 1, "STYLE_MODEL"],
+    [16, 8, 0, 10, 0, "CONDITIONING"],
+    [17, 8, 0, 11, 0, "CONDITIONING"],
+    [18, 9, 0, 10, 2, "CLIP_VISION_OUTPUT"],
+    [19, 10, 0, 12, 0, "CONDITIONING"],
+    [20, 11, 0, 12, 1, "CONDITIONING"],
+    [21, 13, 0, 12, 4, "MASK"],
+    [22, 12, 0, 16, 1, "CONDITIONING"],
+    [23, 12, 1, 16, 2, "CONDITIONING"],
+    [24, 12, 2, 16, 3, "LATENT"],
+    [25, 14, 0, 13, 0, "MASK"],
+    [26, 15, 0, 14, 0, "MASK"],
+    [27, 16, 0, 17, 0, "LATENT"],
+    [28, 17, 0, 18, 0, "IMAGE"],
+    [29, 17, 0, 19, 0, "IMAGE"],
+    [50, 17, 0, 35, 1, "IMAGE"],
+    [51, 30, 0, 36, 0, "WANVIDEOMODEL"],
+    [52, 31, 0, 35, 0, "WANVAE"],
+    [53, 31, 0, 37, 0, "WANVAE"],
+    [54, 32, 0, 34, 0, "WANTEXTENCODER"],
+    [55, 34, 0, 36, 1, "WANVIDEOTEXTEMBEDS"],
+    [56, 35, 0, 36, 2, "WANVIDIMAGE_EMBEDS"],
+    [57, 36, 0, 37, 1, "LATENT"],
+    [58, 37, 0, 38, 0, "IMAGE"],
+    [59, 37, 0, 39, 0, "IMAGE"],
+    [60, 33, 0, 30, 1, "BLOCKSWAPARGS"]
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "title": "📥 INPUT IMAGES",
+      "bounding": [-1250, -600, 400, 900],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 2,
+      "title": "🧠 FLUX REDUX - Model Loaders",
+      "bounding": [-850, -550, 400, 700],
+      "color": "#8AA",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 3,
+      "title": "⚡ FLUX REDUX - Processing",
+      "bounding": [-450, -800, 900, 1000],
+      "color": "#A8A",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 4,
+      "title": "🎬 WAN 2.1 - Model Loaders",
+      "bounding": [1150, -700, 500, 900],
+      "color": "#AA8",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 5,
+      "title": "🎥 WAN 2.1 - Video Generation",
+      "bounding": [1650, -700, 1000, 900],
+      "color": "#8A8",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 6,
+      "title": "💾 OUTPUT",
+      "bounding": [2650, -500, 900, 800],
+      "color": "#A88",
+      "font_size": 24,
+      "flags": {}
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.5,
+      "offset": [800, 800]
+    },
+    "info": {
+      "name": "FLUX Redux + Wan 2.1 UGC Pipeline",
+      "author": "Claude",
+      "description": "Complete pipeline: FLUX Redux for product image styling → Wan 2.1 I2V for UGC video generation",
+      "version": "1.0",
+      "requirements": [
+        "ComfyUI-VideoHelperSuite",
+        "ComfyUI-WanVideo",
+        "ComfyUI-FLUX"
+      ]
+    }
+  },
+  "version": 0.4
+}

@@ -1,0 +1,515 @@
+{
+  "last_node_id": 45,
+  "last_link_id": 65,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "CheckpointLoaderSimple",
+      "pos": [0, 0],
+      "size": [315, 98],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "outputs": [
+        {"name": "MODEL", "type": "MODEL", "links": [1], "slot_index": 0},
+        {"name": "CLIP", "type": "CLIP", "links": [2, 3], "slot_index": 1},
+        {"name": "VAE", "type": "VAE", "links": [4, 5], "slot_index": 2}
+      ],
+      "properties": {"Node name for S&R": "CheckpointLoaderSimple"},
+      "widgets_values": ["flux_dev_fp16.safetensors"],
+      "color": "#223",
+      "bgcolor": "#335",
+      "title": "💾 Load FLUX Dev FP16 (24GB)"
+    },
+    {
+      "id": 2,
+      "type": "LoadImage",
+      "pos": [0, 200],
+      "size": [315, 314],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [6, 7], "slot_index": 0},
+        {"name": "MASK", "type": "MASK", "links": null, "slot_index": 1}
+      ],
+      "properties": {"Node name for S&R": "LoadImage"},
+      "widgets_values": ["reference_image.png", "image"],
+      "color": "#322",
+      "bgcolor": "#533",
+      "title": "📷 Upload Reference Image"
+    },
+    {
+      "id": 3,
+      "type": "IPAdapterModelLoader",
+      "pos": [0, 600],
+      "size": [315, 58],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "outputs": [
+        {"name": "IPADAPTER", "type": "IPADAPTER", "links": [8], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "IPAdapterModelLoader"},
+      "widgets_values": ["ip-adapter-plus_flux.safetensors"],
+      "color": "#232",
+      "bgcolor": "#353",
+      "title": "🔌 Load IP-Adapter Plus FLUX"
+    },
+    {
+      "id": 4,
+      "type": "CLIPVisionLoader",
+      "pos": [0, 740],
+      "size": [315, 58],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "outputs": [
+        {"name": "CLIP_VISION", "type": "CLIP_VISION", "links": [9], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "CLIPVisionLoader"},
+      "widgets_values": ["sigclip_vision_patch14_384.safetensors"],
+      "color": "#232",
+      "bgcolor": "#353",
+      "title": "👁️ Load CLIP Vision (High-Res)"
+    },
+    {
+      "id": 5,
+      "type": "IPAdapterApply",
+      "pos": [400, 300],
+      "size": [315, 178],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {"name": "ipadapter", "type": "IPADAPTER", "link": 8},
+        {"name": "clip_vision", "type": "CLIP_VISION", "link": 9},
+        {"name": "image", "type": "IMAGE", "link": 6},
+        {"name": "model", "type": "MODEL", "link": 1}
+      ],
+      "outputs": [
+        {"name": "MODEL", "type": "MODEL", "links": [10, 25], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "IPAdapterApply"},
+      "widgets_values": [0.90, 0.0, 1.0, "strong", false],
+      "color": "#232",
+      "bgcolor": "#353",
+      "title": "🎯 Apply IP-Adapter (Strong Mode)"
+    },
+    {
+      "id": 6,
+      "type": "CLIPTextEncode",
+      "pos": [400, 0],
+      "size": [450, 250],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": 2}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [11], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "CLIPTextEncode"},
+      "widgets_values": ["cinematic professional photo, ultra high quality, 8k uhd, sharp focus, dramatic lighting, volumetric lighting, photorealistic, hyper detailed, professional color grading, masterpiece"],
+      "color": "#223",
+      "bgcolor": "#335",
+      "title": "✍️ Positive Prompt (High Quality)"
+    },
+    {
+      "id": 7,
+      "type": "CLIPTextEncode",
+      "pos": [400, 550],
+      "size": [450, 200],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": 3}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [12], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "CLIPTextEncode"},
+      "widgets_values": ["blurry, low quality, deformed, ugly, bad anatomy, disfigured, poorly drawn face, mutation, extra limbs, watermark, text, signature, compressed, jpeg artifacts, low resolution"],
+      "color": "#322",
+      "bgcolor": "#533",
+      "title": "❌ Negative Prompt (Extended)"
+    },
+    {
+      "id": 8,
+      "type": "EmptyLatentImage",
+      "pos": [400, 800],
+      "size": [315, 106],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "outputs": [
+        {"name": "LATENT", "type": "LATENT", "links": [13], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "EmptyLatentImage"},
+      "widgets_values": [2048, 2048, 2],
+      "color": "#223",
+      "bgcolor": "#335",
+      "title": "📐 Latent Size (2048x2048 Batch 2)"
+    },
+    {
+      "id": 9,
+      "type": "KSampler",
+      "pos": [900, 200],
+      "size": [315, 262],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {"name": "model", "type": "MODEL", "link": 10},
+        {"name": "positive", "type": "CONDITIONING", "link": 11},
+        {"name": "negative", "type": "CONDITIONING", "link": 12},
+        {"name": "latent_image", "type": "LATENT", "link": 13}
+      ],
+      "outputs": [
+        {"name": "LATENT", "type": "LATENT", "links": [14], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "KSampler"},
+      "widgets_values": [42, "fixed", 50, 8.5, "dpmpp_3m_sde", "exponential", 1.0],
+      "color": "#223",
+      "bgcolor": "#335",
+      "title": "🎲 KSampler High Steps (50)"
+    },
+    {
+      "id": 10,
+      "type": "VAEDecode",
+      "pos": [1300, 200],
+      "size": [210, 46],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {"name": "samples", "type": "LATENT", "link": 14},
+        {"name": "vae", "type": "VAE", "link": 4}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [15, 30], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "VAEDecode"},
+      "widgets_values": [],
+      "title": "🖼️ VAE Decode"
+    },
+    {
+      "id": 11,
+      "type": "UpscaleModelLoader",
+      "pos": [1300, 350],
+      "size": [315, 58],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "outputs": [
+        {"name": "UPSCALE_MODEL", "type": "UPSCALE_MODEL", "links": [16], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "UpscaleModelLoader"},
+      "widgets_values": ["RealESRGAN_x4plus.pth"],
+      "color": "#232",
+      "bgcolor": "#353",
+      "title": "🔍 Load Upscaler 4x"
+    },
+    {
+      "id": 12,
+      "type": "ImageUpscaleWithModel",
+      "pos": [1300, 500],
+      "size": [315, 78],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {"name": "upscale_model", "type": "UPSCALE_MODEL", "link": 16},
+        {"name": "image", "type": "IMAGE", "link": 15}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [17, 31], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "ImageUpscaleWithModel"},
+      "widgets_values": [],
+      "title": "⬆️ Upscale to 8K"
+    },
+    {
+      "id": 13,
+      "type": "SaveImage",
+      "pos": [1700, 200],
+      "size": [350, 400],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 17}
+      ],
+      "properties": {"Node name for S&R": "SaveImage"},
+      "widgets_values": ["highres_output/ultra_"],
+      "color": "#232",
+      "bgcolor": "#353",
+      "title": "💾 Save Ultra High-Res (8K)"
+    },
+    {
+      "id": 14,
+      "type": "LoraLoader",
+      "pos": [0, 900],
+      "size": [315, 126],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {"name": "model", "type": "MODEL", "link": 25},
+        {"name": "clip", "type": "CLIP", "link": 2}
+      ],
+      "outputs": [
+        {"name": "MODEL", "type": "MODEL", "links": [26], "slot_index": 0},
+        {"name": "CLIP", "type": "CLIP", "links": [27], "slot_index": 1}
+      ],
+      "properties": {"Node name for S&R": "LoraLoader"},
+      "widgets_values": ["detail_enhancer_flux.safetensors", 0.75, 0.75],
+      "color": "#323",
+      "bgcolor": "#535",
+      "title": "🎨 Load Detail Enhancer LoRA"
+    },
+    {
+      "id": 15,
+      "type": "LoraLoader",
+      "pos": [0, 1100],
+      "size": [315, 126],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {"name": "model", "type": "MODEL", "link": 26},
+        {"name": "clip", "type": "CLIP", "link": 27}
+      ],
+      "outputs": [
+        {"name": "MODEL", "type": "MODEL", "links": [28], "slot_index": 0},
+        {"name": "CLIP", "type": "CLIP", "links": [29], "slot_index": 1}
+      ],
+      "properties": {"Node name for S&R": "LoraLoader"},
+      "widgets_values": ["cinematic_lighting_flux.safetensors", 0.60, 0.60],
+      "color": "#323",
+      "bgcolor": "#535",
+      "title": "💡 Load Cinematic Lighting LoRA"
+    },
+    {
+      "id": 16,
+      "type": "CLIPTextEncode",
+      "pos": [400, 1000],
+      "size": [450, 250],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": 29}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [32], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "CLIPTextEncode"},
+      "widgets_values": ["cinematic scene, dramatic composition, professional film lighting, movie quality, ultra realistic, 8k cinema, anamorphic lens, bokeh background, professional color correction"],
+      "color": "#223",
+      "bgcolor": "#335",
+      "title": "✍️ Cinematic Prompt (Scene 2)"
+    },
+    {
+      "id": 17,
+      "type": "EmptyLatentImage",
+      "pos": [400, 1300],
+      "size": [315, 106],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "outputs": [
+        {"name": "LATENT", "type": "LATENT", "links": [33], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "EmptyLatentImage"},
+      "widgets_values": [2560, 1440, 1],
+      "color": "#223",
+      "bgcolor": "#335",
+      "title": "📐 Cinematic Latent (2560x1440)"
+    },
+    {
+      "id": 18,
+      "type": "KSampler",
+      "pos": [900, 1000],
+      "size": [315, 262],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "inputs": [
+        {"name": "model", "type": "MODEL", "link": 28},
+        {"name": "positive", "type": "CONDITIONING", "link": 32},
+        {"name": "negative", "type": "CONDITIONING", "link": 12},
+        {"name": "latent_image", "type": "LATENT", "link": 33}
+      ],
+      "outputs": [
+        {"name": "LATENT", "type": "LATENT", "links": [34], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "KSampler"},
+      "widgets_values": [123, "fixed", 60, 9.0, "dpmpp_3m_sde_gpu", "karras", 1.0],
+      "color": "#223",
+      "bgcolor": "#335",
+      "title": "🎲 Cinematic Sampler (60 Steps)"
+    },
+    {
+      "id": 19,
+      "type": "VAEDecode",
+      "pos": [1300, 1000],
+      "size": [210, 46],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [
+        {"name": "samples", "type": "LATENT", "link": 34},
+        {"name": "vae", "type": "VAE", "link": 5}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [35], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "VAEDecode"},
+      "widgets_values": [],
+      "title": "🖼️ VAE Decode (Cinematic)"
+    },
+    {
+      "id": 20,
+      "type": "SaveImage",
+      "pos": [1700, 1000],
+      "size": [350, 400],
+      "flags": {},
+      "order": 19,
+      "mode": 0,
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 35}
+      ],
+      "properties": {"Node name for S&R": "SaveImage"},
+      "widgets_values": ["cinematic_output/scene_"],
+      "color": "#232",
+      "bgcolor": "#353",
+      "title": "💾 Save Cinematic Scene"
+    },
+    {
+      "id": 21,
+      "type": "Note",
+      "pos": [-400, 0],
+      "size": [350, 800],
+      "flags": {},
+      "order": 20,
+      "mode": 0,
+      "properties": {"text": ""},
+      "widgets_values": [
+        "🚀 WORKFLOW HAUTE PERFORMANCE 40GB+ VRAM\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n💾 MODÈLES REQUIS (FP16 Full Precision):\n• FLUX Dev FP16 (~24GB) ou SDXL Base\n• IP-Adapter Plus pour FLUX\n• SigCLIP Vision 384\n• RealESRGAN x4 Upscaler\n• LoRAs: Detail Enhancer + Cinematic Lighting\n\n📦 CUSTOM NODES REQUIS:\n• ComfyUI_IPAdapter_plus\n• ComfyUI-Manager\n• ComfyUI_essentials\n\n🎯 CARACTÉRISTIQUES:\n✓ Résolution native 2048x2048 batch 2\n✓ Upscaling 4x vers 8K (8192x8192)\n✓ Résolution cinématique 2560x1440\n✓ 50-60 steps pour qualité maximale\n✓ Double LoRA stack (détails + lighting)\n✓ VRAM utilisée: ~35-38GB\n\n⚙️ OPTIMISATIONS 40GB VRAM:\n• FP16 complet (pas de quantization)\n• Batch size augmenté à 2-4\n• Pas de CPU offloading\n• VAE en VRAM complète\n• Multiple LoRAs simultanés\n• Résolutions jusqu'à 2560x1440 natif\n\n🎬 USAGE PRODUCTION UGC/TIKTOK:\n• Scène 1: Portrait studio 2K → 8K\n• Scène 2: Cinématique 1440p optimisée\n• Ajoutez des branches KSampler pour + scènes\n• IP-Adapter maintient cohérence personnage\n\n💡 TIPS PERFORMANCE:\n• Utilisez dpmpp_3m_sde_gpu (GPU optimisé)\n• Scheduler exponential pour qualité max\n• CFG 8.5-9.0 pour détails nets\n• Steps 50+ profite pleinement du VRAM\n• Désactivez VAE tiling (assez de VRAM)\n\n📊 VRAM BREAKDOWN:\n• FLUX Dev FP16: ~24GB\n• IP-Adapter + CLIP Vision: ~3GB\n• 2x LoRA rank 64: ~2GB\n• Latent 2048x2048 batch 2: ~4GB\n• VAE + buffers: ~3GB\n• TOTAL: ~36GB utilisés\n\n🔥 Pour pousser à 40GB:\n• Augmentez batch à 4\n• Ou résolution à 2560x1440 batch 2\n• Ou ajoutez 3ème LoRA\n• Ou activez attention slicing OFF\n      "
+      ],
+      "color": "#432",
+      "bgcolor": "#653",
+      "title": "📝 GUIDE 40GB VRAM"
+    },
+    {
+      "id": 22,
+      "type": "FreeU_V2",
+      "pos": [400, 1500],
+      "size": [315, 130],
+      "flags": {},
+      "order": 21,
+      "mode": 0,
+      "inputs": [
+        {"name": "model", "type": "MODEL", "link": 28}
+      ],
+      "outputs": [
+        {"name": "MODEL", "type": "MODEL", "links": [40], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "FreeU_V2"},
+      "widgets_values": [1.3, 1.4, 0.9, 0.2],
+      "color": "#323",
+      "bgcolor": "#535",
+      "title": "✨ FreeU V2 (Amélioration détails)"
+    },
+    {
+      "id": 23,
+      "type": "PreviewImage",
+      "pos": [1700, 700],
+      "size": [300, 300],
+      "flags": {},
+      "order": 22,
+      "mode": 0,
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 30}
+      ],
+      "properties": {"Node name for S&R": "PreviewImage"},
+      "title": "👀 Preview 2K"
+    },
+    {
+      "id": 24,
+      "type": "PreviewImage",
+      "pos": [2100, 200],
+      "size": [400, 450],
+      "flags": {},
+      "order": 23,
+      "mode": 0,
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 31}
+      ],
+      "properties": {"Node name for S&R": "PreviewImage"},
+      "title": "👀 Preview 8K Upscaled"
+    }
+  ],
+  "links": [
+    [1, 1, 0, 5, 3, "MODEL"],
+    [2, 1, 1, 6, 0, "CLIP"],
+    [3, 1, 1, 7, 0, "CLIP"],
+    [4, 1, 2, 10, 1, "VAE"],
+    [5, 1, 2, 19, 1, "VAE"],
+    [6, 2, 0, 5, 2, "IMAGE"],
+    [7, 2, 0, 25, 0, "IMAGE"],
+    [8, 3, 0, 5, 0, "IPADAPTER"],
+    [9, 4, 0, 5, 1, "CLIP_VISION"],
+    [10, 5, 0, 9, 0, "MODEL"],
+    [11, 6, 0, 9, 1, "CONDITIONING"],
+    [12, 7, 0, 9, 2, "CONDITIONING"],
+    [13, 8, 0, 9, 3, "LATENT"],
+    [14, 9, 0, 10, 0, "LATENT"],
+    [15, 10, 0, 12, 1, "IMAGE"],
+    [16, 11, 0, 12, 0, "UPSCALE_MODEL"],
+    [17, 12, 0, 13, 0, "IMAGE"],
+    [25, 5, 0, 14, 0, "MODEL"],
+    [26, 14, 0, 15, 0, "MODEL"],
+    [27, 14, 1, 15, 1, "CLIP"],
+    [28, 15, 0, 18, 0, "MODEL"],
+    [29, 15, 1, 16, 0, "CLIP"],
+    [30, 10, 0, 23, 0, "IMAGE"],
+    [31, 12, 0, 24, 0, "IMAGE"],
+    [32, 16, 0, 18, 1, "CONDITIONING"],
+    [33, 17, 0, 18, 3, "LATENT"],
+    [34, 18, 0, 19, 0, "LATENT"],
+    [35, 19, 0, 20, 0, "IMAGE"],
+    [40, 22, 0, 18, 0, "MODEL"]
+  ],
+  "groups": [
+    {
+      "title": "🎯 ZONE 1: MODÈLES & IP-ADAPTER (24GB)",
+      "bounding": [-50, -50, 800, 1300],
+      "color": "#3A6633",
+      "font_size": 24
+    },
+    {
+      "title": "🖼️ ZONE 2: GÉNÉRATION HAUTE-RÉS 2K→8K (12GB)",
+      "bounding": [850, -50, 1300, 700],
+      "color": "#335588",
+      "font_size": 24
+    },
+    {
+      "title": "🎬 ZONE 3: SCÈNE CINÉMATIQUE + LORAS (8GB)",
+      "bounding": [850, 950, 1300, 600],
+      "color": "#883355",
+      "font_size": 24
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.6,
+      "offset": [150, 50]
+    }
+  },
+  "version": 0.4
+}

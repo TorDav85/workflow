@@ -1,0 +1,75 @@
+{
+"type": "DepthCrafterInfer",
+"pos": [300, 650]
+},
+{
+"id": 8,
+"type": "DepthNormalize",
+"pos": [600, 650]
+},
+{
+"id": 9,
+"type": "CLIPTextEncode",
+"pos": [900, 200],
+"widgets_values": ["full body dancer, tiktok dance, studio lighting, cinematic"]
+},
+{
+"id": 10,
+"type": "CLIPTextEncode",
+"pos": [900, 350],
+"widgets_values": ["low quality, blur, artifacts, extra limbs"]
+},
+{
+"id": 11,
+"type": "LoadCheckpoint",
+"pos": [900, 550],
+"widgets_values": ["ltx-video-2.safetensors"]
+},
+{
+"id": 12,
+"type": "VAEEncode",
+"pos": [900, 750]
+},
+{
+"id": 13,
+"type": "LTX2DepthCondition",
+"pos": [1200, 650],
+"widgets_values": [0.7, 0.65]
+},
+{
+"id": 14,
+"type": "LTX2Sampler",
+"pos": [1200, 400],
+"widgets_values": [32, 7.5, 0.68, "dpmpp_2m"]
+},
+{
+"id": 15,
+"type": "VAEDecode",
+"pos": [1500, 400]
+},
+{
+"id": 16,
+"type": "VHS_FramesToVideo",
+"pos": [1800, 400],
+"widgets_values": [30, "h264", 20]
+}
+],
+"links": [
+[1, 0, 2, 0],
+[2, 0, 3, 0],
+[3, 0, 5, 0],
+[4, 0, 5, 1],
+[2, 0, 6, 0],
+[6, 0, 7, 0],
+[7, 0, 8, 0],
+[5, 0, 12, 0],
+[12, 0, 14, 0],
+[9, 0, 14, 1],
+[10, 0, 14, 2],
+[11, 0, 14, 3],
+[8, 0, 13, 0],
+[13, 0, 14, 4],
+[14, 0, 15, 0],
+[15, 0, 16, 0]
+]
+}

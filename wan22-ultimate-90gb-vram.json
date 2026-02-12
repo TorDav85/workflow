@@ -1,0 +1,933 @@
+{
+  "id": "wan22-vace-ultimate-90gb",
+  "revision": 1,
+  "last_node_id": 100,
+  "last_link_id": 150,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "LoadImage",
+      "pos": [-1500, -800],
+      "size": [300, 314],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [1, 2, 90]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "title": "📦 Input Image / First Frame",
+      "properties": {"Node name for S&R": "LoadImage"},
+      "widgets_values": ["input.png", "image"],
+      "color": "#322",
+      "bgcolor": "#533"
+    },
+    {
+      "id": 2,
+      "type": "LoadImage",
+      "pos": [-1500, -400],
+      "size": [300, 314],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [3]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "title": "🖼️ Style Reference (Optional)",
+      "properties": {"Node name for S&R": "LoadImage"},
+      "widgets_values": ["style_ref.png", "image"],
+      "color": "#233",
+      "bgcolor": "#355"
+    },
+    {
+      "id": 3,
+      "type": "VHS_LoadVideo",
+      "pos": [-1500, 50],
+      "size": [300, 250],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [4]
+        },
+        {
+          "name": "frame_count",
+          "type": "INT",
+          "links": null
+        },
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "links": null
+        },
+        {
+          "name": "video_info",
+          "type": "VHS_VIDEOINFO",
+          "links": null
+        }
+      ],
+      "title": "🎬 Control Video (Depth/Pose/Canny)",
+      "properties": {"Node name for S&R": "VHS_LoadVideo"},
+      "widgets_values": {
+        "video": "control_video.mp4",
+        "force_rate": 24,
+        "force_size": "Disabled",
+        "custom_width": 1920,
+        "custom_height": 1080,
+        "frame_load_cap": 133,
+        "skip_first_frames": 0,
+        "select_every_nth": 1
+      },
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 10,
+      "type": "WanVideoModelLoader",
+      "pos": [200, -1200],
+      "size": [450, 350],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {"name": "compile_args", "shape": 7, "type": "WANCOMPILEARGS", "link": 100},
+        {"name": "block_swap_args", "shape": 7, "type": "BLOCKSWAPARGS", "link": null},
+        {"name": "lora", "shape": 7, "type": "WANVIDLORA", "link": null},
+        {"name": "vram_management_args", "shape": 7, "type": "WANVRAMARGS", "link": null}
+      ],
+      "outputs": [
+        {
+          "name": "wan_video_model",
+          "type": "WANVIDEOMODEL",
+          "slot_index": 0,
+          "links": [10]
+        }
+      ],
+      "title": "🧠 Wan 2.2 14B HIGH Noise (BF16)",
+      "properties": {"Node name for S&R": "WanVideoModelLoader"},
+      "widgets_values": [
+        "wan2.2_t2v_high_noise_14B_bf16.safetensors",
+        "bf16",
+        "sageattn_compiled",
+        false,
+        false,
+        false,
+        false,
+        1
+      ],
+      "color": "#324",
+      "bgcolor": "#546"
+    },
+    {
+      "id": 11,
+      "type": "WanVideoModelLoader",
+      "pos": [200, -750],
+      "size": [450, 350],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {"name": "compile_args", "shape": 7, "type": "WANCOMPILEARGS", "link": 101},
+        {"name": "block_swap_args", "shape": 7, "type": "BLOCKSWAPARGS", "link": null},
+        {"name": "lora", "shape": 7, "type": "WANVIDLORA", "link": null},
+        {"name": "vram_management_args", "shape": 7, "type": "WANVRAMARGS", "link": null}
+      ],
+      "outputs": [
+        {
+          "name": "wan_video_model",
+          "type": "WANVIDEOMODEL",
+          "slot_index": 0,
+          "links": [11]
+        }
+      ],
+      "title": "🧠 Wan 2.2 14B LOW Noise (BF16)",
+      "properties": {"Node name for S&R": "WanVideoModelLoader"},
+      "widgets_values": [
+        "wan2.2_t2v_low_noise_14B_bf16.safetensors",
+        "bf16",
+        "sageattn_compiled",
+        false,
+        false,
+        false,
+        false,
+        1
+      ],
+      "color": "#324",
+      "bgcolor": "#546"
+    },
+    {
+      "id": 12,
+      "type": "TorchCompileSettings",
+      "pos": [-100, -1100],
+      "size": [250, 150],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "compile_args",
+          "type": "WANCOMPILEARGS",
+          "slot_index": 0,
+          "links": [100, 101]
+        }
+      ],
+      "title": "⚡ Torch Compile (MAX SPEED)",
+      "properties": {"Node name for S&R": "TorchCompileSettings"},
+      "widgets_values": ["max-autotune", true, true],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 15,
+      "type": "WanVideoVAELoader",
+      "pos": [200, -300],
+      "size": [400, 58],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "vae",
+          "type": "WANVAE",
+          "slot_index": 0,
+          "links": [15, 16]
+        }
+      ],
+      "title": "🎞️ Wan 2.2 VAE (FP32 MAX QUALITY)",
+      "properties": {"Node name for S&R": "WanVideoVAELoader"},
+      "widgets_values": ["wan2.2_vae_fp32.safetensors", "fp32"],
+      "color": "#324",
+      "bgcolor": "#546"
+    },
+    {
+      "id": 16,
+      "type": "WanVideoTextEncoderLoader",
+      "pos": [200, -150],
+      "size": [400, 82],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "wan_text_encoder",
+          "type": "WANTEXTENCODER",
+          "slot_index": 0,
+          "links": [20]
+        }
+      ],
+      "title": "📝 UMT5 XXL (BF16 FULL - 19GB)",
+      "properties": {"Node name for S&R": "WanVideoTextEncoderLoader"},
+      "widgets_values": ["umt5_xxl_bf16.safetensors", "bf16"],
+      "color": "#324",
+      "bgcolor": "#546"
+    },
+    {
+      "id": 20,
+      "type": "WanVideoTextEncode",
+      "pos": [750, -400],
+      "size": [500, 250],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {"name": "positive_prompt", "type": "STRING", "widget": {"name": "positive_prompt"}, "link": null},
+        {"name": "negative_prompt", "type": "STRING", "widget": {"name": "negative_prompt"}, "link": null},
+        {"name": "wan_text_encoder", "type": "WANTEXTENCODER", "link": 20}
+      ],
+      "outputs": [
+        {
+          "name": "text_embeds",
+          "type": "WANVIDEOTEXTEMBEDS",
+          "slot_index": 0,
+          "links": [25]
+        }
+      ],
+      "title": "✍️ Video Prompts (Cinematic)",
+      "properties": {"Node name for S&R": "WanVideoTextEncode"},
+      "widgets_values": [
+        "Cinematic masterpiece, professional commercial video, smooth natural motion, elegant camera movement, high-end production quality, perfect lighting, 8K resolution, film grain, premium aesthetic, brand showcase, dramatic reveal, soft shadows, volumetric lighting",
+        "blurry, distorted, low quality, watermark, text overlay, shaky camera, amateur, overexposed, underexposed, pixelated, compression artifacts, unnatural motion, flickering, jittery"
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 25,
+      "type": "WanVideoImageEncode",
+      "pos": [750, -50],
+      "size": [400, 120],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [
+        {"name": "vae", "type": "WANVAE", "link": 15},
+        {"name": "image", "type": "IMAGE", "link": 1}
+      ],
+      "outputs": [
+        {
+          "name": "image_embeds",
+          "type": "WANVIDIMAGE_EMBEDS",
+          "links": [30],
+          "slot_index": 0
+        }
+      ],
+      "title": "🖼️ Encode Start Image",
+      "properties": {"Node name for S&R": "WanVideoImageEncode"},
+      "widgets_values": [0, 1],
+      "color": "#323",
+      "bgcolor": "#535"
+    },
+    {
+      "id": 30,
+      "type": "Wan22MoESampler",
+      "pos": [1400, -600],
+      "size": [450, 550],
+      "flags": {},
+      "order": 20,
+      "mode": 0,
+      "inputs": [
+        {"name": "wan_video_model_high", "type": "WANVIDEOMODEL", "link": 10},
+        {"name": "wan_video_model_low", "type": "WANVIDEOMODEL", "link": 11},
+        {"name": "text_embeds", "type": "WANVIDEOTEXTEMBEDS", "link": 25},
+        {"name": "image_embeds", "shape": 7, "type": "WANVIDIMAGE_EMBEDS", "link": 30},
+        {"name": "samples", "shape": 7, "type": "LATENT", "link": null},
+        {"name": "sigmas", "shape": 7, "type": "SIGMAS", "link": null},
+        {"name": "vace_embeds", "shape": 7, "type": "WANVACE_EMBEDS", "link": 50},
+        {"name": "control_embeds", "shape": 7, "type": "WANCONTROL_EMBEDS", "link": 60}
+      ],
+      "outputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "slot_index": 0,
+          "links": [35]
+        },
+        {
+          "name": "denoised_samples",
+          "type": "LATENT",
+          "links": null
+        }
+      ],
+      "title": "🎲 Wan 2.2 MoE Sampler (1080p ULTIMATE)",
+      "properties": {"Node name for S&R": "Wan22MoESampler"},
+      "widgets_values": [
+        1920,
+        1080,
+        133,
+        40,
+        6.5,
+        "fixed",
+        123456789,
+        1,
+        1,
+        0.5,
+        false,
+        "comfy",
+        0,
+        -1,
+        false
+      ],
+      "color": "#323",
+      "bgcolor": "#535"
+    },
+    {
+      "id": 35,
+      "type": "WanVideoDecode",
+      "pos": [1950, -500],
+      "size": [350, 200],
+      "flags": {},
+      "order": 25,
+      "mode": 0,
+      "inputs": [
+        {"name": "vae", "type": "WANVAE", "link": 16},
+        {"name": "samples", "type": "LATENT", "link": 35}
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [40, 41, 70]
+        }
+      ],
+      "title": "🎞️ Decode Video (Batch 48 - 90GB)",
+      "properties": {"Node name for S&R": "WanVideoDecode"},
+      "widgets_values": [true, 48, 24, 256, 256, "default"],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 40,
+      "type": "WanVideoVACELoader",
+      "pos": [-800, -600],
+      "size": [400, 200],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "vace_model",
+          "type": "WANVACE_MODEL",
+          "slot_index": 0,
+          "links": [45]
+        }
+      ],
+      "title": "🎭 VACE Module (14B BF16)",
+      "properties": {"Node name for S&R": "WanVideoVACELoader"},
+      "widgets_values": [
+        "wan2.2_vace_14B_bf16.safetensors",
+        "bf16",
+        "sageattn"
+      ],
+      "color": "#342",
+      "bgcolor": "#563"
+    },
+    {
+      "id": 41,
+      "type": "WanVideoVACEEncode",
+      "pos": [-800, -300],
+      "size": [400, 200],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {"name": "vace_model", "type": "WANVACE_MODEL", "link": 45},
+        {"name": "reference_image", "type": "IMAGE", "link": 3},
+        {"name": "vae", "type": "WANVAE", "link": null}
+      ],
+      "outputs": [
+        {
+          "name": "vace_embeds",
+          "type": "WANVACE_EMBEDS",
+          "slot_index": 0,
+          "links": [50]
+        }
+      ],
+      "title": "🎨 VACE Style Encoding",
+      "properties": {"Node name for S&R": "WanVideoVACEEncode"},
+      "widgets_values": [0.85, "reference"],
+      "color": "#342",
+      "bgcolor": "#563"
+    },
+    {
+      "id": 45,
+      "type": "WanFunControlLoader",
+      "pos": [-800, 0],
+      "size": [400, 150],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "control_model",
+          "type": "WANCONTROL_MODEL",
+          "slot_index": 0,
+          "links": [55]
+        }
+      ],
+      "title": "🎮 Fun Control Model (Camera/Depth)",
+      "properties": {"Node name for S&R": "WanFunControlLoader"},
+      "widgets_values": [
+        "wan2.2_fun_control_14B_bf16.safetensors",
+        "bf16"
+      ],
+      "color": "#243",
+      "bgcolor": "#465"
+    },
+    {
+      "id": 46,
+      "type": "DepthAnythingV2Preprocessor",
+      "pos": [-800, 250],
+      "size": [350, 100],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {"name": "image", "type": "IMAGE", "link": 4}
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [56]
+        }
+      ],
+      "title": "📐 Depth Anything V2 (Control)",
+      "properties": {"Node name for S&R": "DepthAnythingV2Preprocessor"},
+      "widgets_values": ["depth_anything_v2_vitl.pth", 518],
+      "color": "#243",
+      "bgcolor": "#465"
+    },
+    {
+      "id": 47,
+      "type": "WanFunControlEncode",
+      "pos": [-350, 100],
+      "size": [400, 200],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {"name": "control_model", "type": "WANCONTROL_MODEL", "link": 55},
+        {"name": "control_images", "type": "IMAGE", "link": 56}
+      ],
+      "outputs": [
+        {
+          "name": "control_embeds",
+          "type": "WANCONTROL_EMBEDS",
+          "slot_index": 0,
+          "links": [60]
+        }
+      ],
+      "title": "🎬 Fun Control Encoding",
+      "properties": {"Node name for S&R": "WanFunControlEncode"},
+      "widgets_values": [1.0, "depth"],
+      "color": "#243",
+      "bgcolor": "#465"
+    },
+    {
+      "id": 50,
+      "type": "VHS_VideoCombine",
+      "pos": [2400, -500],
+      "size": [400, 450],
+      "flags": {},
+      "order": 26,
+      "mode": 0,
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 40},
+        {"name": "audio", "shape": 7, "type": "AUDIO", "link": null},
+        {"name": "meta_batch", "shape": 7, "type": "VHS_BatchManager", "link": null},
+        {"name": "vae", "shape": 7, "type": "VAE", "link": null}
+      ],
+      "outputs": [
+        {"name": "Filenames", "type": "VHS_FILENAMES", "links": null}
+      ],
+      "title": "💾 Save H.265 10-bit (1080p Native)",
+      "properties": {"Node name for S&R": "VHS_VideoCombine"},
+      "widgets_values": {
+        "frame_rate": 24,
+        "loop_count": 0,
+        "filename_prefix": "wan22_1080p_ultimate",
+        "format": "video/h265-mp4",
+        "pix_fmt": "yuv420p10le",
+        "crf": 16,
+        "save_metadata": true,
+        "pingpong": false,
+        "save_output": true,
+        "videopreview": {"hidden": false, "paused": false, "params": {}}
+      },
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 51,
+      "type": "PreviewImage",
+      "pos": [2400, 50],
+      "size": [400, 300],
+      "flags": {},
+      "order": 27,
+      "mode": 0,
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 41}
+      ],
+      "outputs": [],
+      "title": "👀 Preview Video Frames",
+      "properties": {"Node name for S&R": "PreviewImage"},
+      "widgets_values": [],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 60,
+      "type": "FaceRestoreCFCodeFormer",
+      "pos": [2900, -700],
+      "size": [350, 150],
+      "flags": {},
+      "order": 28,
+      "mode": 0,
+      "inputs": [
+        {"name": "image", "type": "IMAGE", "link": 70},
+        {"name": "facerestore_model", "type": "FACERESTORE_MODEL", "link": 75}
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [80]
+        }
+      ],
+      "title": "👤 Face Enhancement (CodeFormer)",
+      "properties": {"Node name for S&R": "FaceRestoreCFCodeFormer"},
+      "widgets_values": [1, 0.7],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 61,
+      "type": "FaceRestoreModelLoader",
+      "pos": [2900, -850],
+      "size": [350, 58],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "FACERESTORE_MODEL", "type": "FACERESTORE_MODEL", "slot_index": 0, "links": [75]}
+      ],
+      "title": "🧠 CodeFormer Model",
+      "properties": {"Node name for S&R": "FaceRestoreModelLoader"},
+      "widgets_values": ["codeformer.pth"],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 65,
+      "type": "UpscaleModelLoader",
+      "pos": [2900, -450],
+      "size": [350, 58],
+      "flags": {},
+      "order": 29,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "UPSCALE_MODEL", "type": "UPSCALE_MODEL", "slot_index": 0, "links": [85]}
+      ],
+      "title": "⬆️ Real-ESRGAN 4x Anime V3",
+      "properties": {"Node name for S&R": "UpscaleModelLoader"},
+      "widgets_values": ["RealESRGAN_x4plus_anime_6B.pth"],
+      "color": "#342",
+      "bgcolor": "#563"
+    },
+    {
+      "id": 66,
+      "type": "ImageUpscaleWithModel",
+      "pos": [2900, -300],
+      "size": [350, 50],
+      "flags": {},
+      "order": 30,
+      "mode": 0,
+      "inputs": [
+        {"name": "upscale_model", "type": "UPSCALE_MODEL", "link": 85},
+        {"name": "image", "type": "IMAGE", "link": 80}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "slot_index": 0, "links": [90]}
+      ],
+      "title": "⬆️ Upscale to 4K",
+      "properties": {"Node name for S&R": "ImageUpscaleWithModel"},
+      "widgets_values": [],
+      "color": "#342",
+      "bgcolor": "#563"
+    },
+    {
+      "id": 67,
+      "type": "VHS_VideoCombine",
+      "pos": [2900, -150],
+      "size": [400, 450],
+      "flags": {},
+      "order": 31,
+      "mode": 0,
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 90},
+        {"name": "audio", "shape": 7, "type": "AUDIO", "link": null},
+        {"name": "meta_batch", "shape": 7, "type": "VHS_BatchManager", "link": null},
+        {"name": "vae", "shape": 7, "type": "VAE", "link": null}
+      ],
+      "outputs": [
+        {"name": "Filenames", "type": "VHS_FILENAMES", "links": null}
+      ],
+      "title": "💾 Save H.265 10-bit (4K Enhanced)",
+      "properties": {"Node name for S&R": "VHS_VideoCombine"},
+      "widgets_values": {
+        "frame_rate": 24,
+        "loop_count": 0,
+        "filename_prefix": "wan22_4K_enhanced",
+        "format": "video/h265-mp4",
+        "pix_fmt": "yuv420p10le",
+        "crf": 14,
+        "save_metadata": true,
+        "pingpong": false,
+        "save_output": true,
+        "videopreview": {"hidden": false, "paused": false, "params": {}}
+      },
+      "color": "#342",
+      "bgcolor": "#563"
+    },
+    {
+      "id": 70,
+      "type": "Florence2Run",
+      "pos": [-350, -500],
+      "size": [350, 200],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {"name": "image", "type": "IMAGE", "link": 90}
+      ],
+      "outputs": [
+        {"name": "caption", "type": "STRING", "slot_index": 0, "links": null}
+      ],
+      "title": "🔍 Florence 2 Auto-Caption",
+      "properties": {"Node name for S&R": "Florence2Run"},
+      "widgets_values": ["<MORE_DETAILED_CAPTION>", 1024, 3, true, false],
+      "color": "#234",
+      "bgcolor": "#456"
+    },
+    {
+      "id": 80,
+      "type": "Note",
+      "pos": [-1500, -1100],
+      "size": [600, 200],
+      "flags": {},
+      "order": 32,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "🚀 WAN 2.2 ULTIMATE - 90GB VRAM CONFIG",
+      "properties": {},
+      "widgets_values": [
+        "⚡ CONFIGURATION 90GB VRAM - MAXIMUM POWER:\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n• Architecture: MoE (Mixture of Experts) 14B + 14B\n• Modèles: HIGH + LOW noise en BF16 FULL (pas de quantization!)\n• Text Encoder: UMT5 XXL BF16 (~19GB)\n• VAE: FP32 (précision maximale)\n• VACE: Contrôle style + reference-to-video\n• Fun Control: Camera motion + Depth control\n• Résolution: 1920x1080 native\n• Frames: 133 (~5.5 secondes)\n• Decode batch: 48 frames\n• Torch Compile: max-autotune + SageAttn Compiled\n\n📊 VRAM estimée: ~75-88GB peak"
+      ],
+      "color": "#324",
+      "bgcolor": "#546"
+    },
+    {
+      "id": 81,
+      "type": "Note",
+      "pos": [200, 100],
+      "size": [450, 250],
+      "flags": {},
+      "order": 33,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "📁 MODÈLES REQUIS (Full Precision)",
+      "properties": {},
+      "widgets_values": [
+        "MODÈLES WAN 2.2 HAUTE QUALITÉ:\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n📦 diffusion_models/\n  • wan2.2_t2v_high_noise_14B_bf16.safetensors (~28GB)\n  • wan2.2_t2v_low_noise_14B_bf16.safetensors (~28GB)\n  • wan2.2_vace_14B_bf16.safetensors (~28GB)\n  • wan2.2_fun_control_14B_bf16.safetensors (~28GB)\n\n📦 text_encoders/\n  • umt5_xxl_bf16.safetensors (~19GB)\n\n📦 vae/\n  • wan2.2_vae_fp32.safetensors (~600MB)\n\n📦 clip_vision/\n  • clip_vision_h.safetensors\n\n⚠️ TOTAL DISK: ~130GB (qualité max!)"
+      ],
+      "color": "#324",
+      "bgcolor": "#546"
+    },
+    {
+      "id": 82,
+      "type": "Note",
+      "pos": [-800, -900],
+      "size": [500, 200],
+      "flags": {},
+      "order": 34,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "🎭 VACE - Video Aware Composable Editing",
+      "properties": {},
+      "widgets_values": [
+        "🎨 CAPACITÉS VACE:\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n• Reference-to-Video (R2V): Génère vidéo depuis style\n• Video-to-Video (V2V): Transforme vidéo existante\n• Style Transfer: Applique style image à vidéo\n• Move-Anything: Contrôle mouvement objets\n• Swap-Anything: Remplace éléments\n• Animate-Anything: Animation depuis image statique\n\n💡 Charge style_ref.png pour activer!"
+      ],
+      "color": "#342",
+      "bgcolor": "#563"
+    },
+    {
+      "id": 83,
+      "type": "Note",
+      "pos": [-800, 450],
+      "size": [500, 150],
+      "flags": {},
+      "order": 35,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "🎮 FUN CONTROL - Camera & Motion",
+      "properties": {},
+      "widgets_values": [
+        "🎬 TYPES DE CONTRÔLE:\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n• Depth: Contrôle profondeur 3D\n• Canny: Contrôle contours\n• OpenPose: Contrôle pose humaine\n• MLSD: Contrôle géométrie\n• Camera: Pan, Zoom, Dolly, Orbit\n\n💡 Charge control_video.mp4 pour activer!"
+      ],
+      "color": "#243",
+      "bgcolor": "#465"
+    },
+    {
+      "id": 84,
+      "type": "Note",
+      "pos": [2900, 350],
+      "size": [400, 150],
+      "flags": {},
+      "order": 36,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "⬆️ POST-PROCESSING PIPELINE",
+      "properties": {},
+      "widgets_values": [
+        "🔧 AMÉLIORATION:\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n1. CodeFormer: Restauration visages IA\n2. Real-ESRGAN 4x: 1080p → 4K (7680x4320)\n3. H.265 10-bit CRF 14: Qualité broadcast\n\n💡 Bypass si pas de visages dans vidéo"
+      ],
+      "color": "#342",
+      "bgcolor": "#563"
+    }
+  ],
+  "links": [
+    [1, 1, 0, 25, 1, "IMAGE"],
+    [2, 1, 0, 70, 0, "IMAGE"],
+    [3, 2, 0, 41, 1, "IMAGE"],
+    [4, 3, 0, 46, 0, "IMAGE"],
+    [10, 10, 0, 30, 0, "WANVIDEOMODEL"],
+    [11, 11, 0, 30, 1, "WANVIDEOMODEL"],
+    [15, 15, 0, 25, 0, "WANVAE"],
+    [16, 15, 0, 35, 0, "WANVAE"],
+    [20, 16, 0, 20, 2, "WANTEXTENCODER"],
+    [25, 20, 0, 30, 2, "WANVIDEOTEXTEMBEDS"],
+    [30, 25, 0, 30, 3, "WANVIDIMAGE_EMBEDS"],
+    [35, 30, 0, 35, 1, "LATENT"],
+    [40, 35, 0, 50, 0, "IMAGE"],
+    [41, 35, 0, 51, 0, "IMAGE"],
+    [45, 40, 0, 41, 0, "WANVACE_MODEL"],
+    [50, 41, 0, 30, 6, "WANVACE_EMBEDS"],
+    [55, 45, 0, 47, 0, "WANCONTROL_MODEL"],
+    [56, 46, 0, 47, 1, "IMAGE"],
+    [60, 47, 0, 30, 7, "WANCONTROL_EMBEDS"],
+    [70, 35, 0, 60, 0, "IMAGE"],
+    [75, 61, 0, 60, 1, "FACERESTORE_MODEL"],
+    [80, 60, 0, 66, 1, "IMAGE"],
+    [85, 65, 0, 66, 0, "UPSCALE_MODEL"],
+    [90, 66, 0, 67, 0, "IMAGE"],
+    [100, 12, 0, 10, 0, "WANCOMPILEARGS"],
+    [101, 12, 0, 11, 0, "WANCOMPILEARGS"]
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "title": "📥 INPUTS (Image + Style + Control Video)",
+      "bounding": [-1550, -1150, 700, 1450],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 2,
+      "title": "🎭 VACE - Style Transfer & Reference Control",
+      "bounding": [-850, -950, 550, 500],
+      "color": "#8A8",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 3,
+      "title": "🎮 FUN CONTROL - Depth/Pose/Camera",
+      "bounding": [-850, -50, 550, 700],
+      "color": "#88A",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 4,
+      "title": "🧠 WAN 2.2 14B MoE MODELS (BF16 FULL)",
+      "bounding": [-150, -1300, 800, 1050],
+      "color": "#AA8",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 5,
+      "title": "⚡ TEXT & IMAGE ENCODING",
+      "bounding": [700, -500, 550, 400],
+      "color": "#A8A",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 6,
+      "title": "🎲 MoE SAMPLER - 1080p ULTIMATE",
+      "bounding": [1350, -700, 550, 700],
+      "color": "#8AA",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 7,
+      "title": "💾 OUTPUT 1080p NATIVE",
+      "bounding": [2350, -600, 500, 750],
+      "color": "#A88",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 8,
+      "title": "⬆️ POST-PROCESS: Face + 4K Upscale",
+      "bounding": [2850, -900, 500, 1000],
+      "color": "#8A8",
+      "font_size": 24,
+      "flags": {}
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.4,
+      "offset": [800, 1400]
+    },
+    "info": {
+      "name": "Wan 2.2 MoE ULTIMATE - 90GB VRAM",
+      "author": "Claude",
+      "description": "Ultimate pipeline for 90GB VRAM: Wan 2.2 MoE 14B + VACE + Fun Control, all in BF16 full precision",
+      "version": "4.0",
+      "vram_required": "90GB",
+      "disk_required": "~130GB",
+      "features": [
+        "Wan 2.2 MoE architecture (High + Low noise 14B)",
+        "VACE: Reference-to-Video, Style Transfer",
+        "Fun Control: Depth, Pose, Camera motion",
+        "Full BF16 precision (no quantization)",
+        "UMT5 XXL BF16 text encoder",
+        "VAE FP32 maximum quality",
+        "Torch Compile + SageAttn acceleration",
+        "1920x1080 native + 4K upscale",
+        "133 frames (~5.5 seconds)",
+        "Face enhancement with CodeFormer",
+        "H.265 10-bit output CRF 14"
+      ],
+      "requirements": [
+        "ComfyUI-VideoHelperSuite",
+        "ComfyUI-WanVideoWrapper (Kijai)",
+        "ComfyUI-FaceRestore",
+        "ComfyUI-Florence2",
+        "comfyui_controlnet_aux",
+        "SageAttention",
+        "Torch Compile compatible GPU"
+      ]
+    },
+    "workflowRendererVersion": "LG",
+    "frontendVersion": "1.38.12"
+  },
+  "version": 0.4
+}

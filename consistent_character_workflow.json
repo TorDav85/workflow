@@ -1,0 +1,591 @@
+{
+  "last_node_id": 30,
+  "last_link_id": 40,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "CheckpointLoaderSimple",
+      "pos": [0, 0],
+      "size": [315, 98],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "outputs": [
+        {"name": "MODEL", "type": "MODEL", "links": [1], "slot_index": 0},
+        {"name": "CLIP", "type": "CLIP", "links": [2, 3], "slot_index": 1},
+        {"name": "VAE", "type": "VAE", "links": [4, 5], "slot_index": 2}
+      ],
+      "properties": {"Node name for S&R": "CheckpointLoaderSimple"},
+      "widgets_values": ["sd_xl_base_1.0.safetensors"],
+      "color": "#223",
+      "bgcolor": "#335",
+      "title": "💾 Load SDXL Checkpoint"
+    },
+    {
+      "id": 2,
+      "type": "LoadImage",
+      "pos": [0, 200],
+      "size": [315, 314],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [6, 7], "slot_index": 0},
+        {"name": "MASK", "type": "MASK", "links": null, "slot_index": 1}
+      ],
+      "properties": {"Node name for S&R": "LoadImage"},
+      "widgets_values": ["character_reference.png", "image"],
+      "color": "#322",
+      "bgcolor": "#533",
+      "title": "📷 Upload Character Reference"
+    },
+    {
+      "id": 3,
+      "type": "IPAdapterModelLoader",
+      "pos": [0, 600],
+      "size": [315, 58],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "outputs": [
+        {"name": "IPADAPTER", "type": "IPADAPTER", "links": [8], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "IPAdapterModelLoader"},
+      "widgets_values": ["ip-adapter-plus_sdxl_vit-h.safetensors"],
+      "color": "#232",
+      "bgcolor": "#353",
+      "title": "🔌 Load IP-Adapter Plus (SDXL)"
+    },
+    {
+      "id": 4,
+      "type": "CLIPVisionLoader",
+      "pos": [0, 740],
+      "size": [315, 58],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "outputs": [
+        {"name": "CLIP_VISION", "type": "CLIP_VISION", "links": [9], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "CLIPVisionLoader"},
+      "widgets_values": ["CLIP-ViT-bigG-14-laion2B-39B-b160k.safetensors"],
+      "color": "#232",
+      "bgcolor": "#353",
+      "title": "👁️ Load CLIP Vision"
+    },
+    {
+      "id": 5,
+      "type": "IPAdapterApply",
+      "pos": [400, 300],
+      "size": [315, 178],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {"name": "ipadapter", "type": "IPADAPTER", "link": 8},
+        {"name": "clip_vision", "type": "CLIP_VISION", "link": 9},
+        {"name": "image", "type": "IMAGE", "link": 6},
+        {"name": "model", "type": "MODEL", "link": 1}
+      ],
+      "outputs": [
+        {"name": "MODEL", "type": "MODEL", "links": [10], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "IPAdapterApply"},
+      "widgets_values": [0.85, 0.0, 1.0, "standard", false],
+      "color": "#232",
+      "bgcolor": "#353",
+      "title": "🎯 Apply IP-Adapter (Character Consistency)"
+    },
+    {
+      "id": 6,
+      "type": "CLIPTextEncode",
+      "pos": [400, 0],
+      "size": [400, 200],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": 2}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [11], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "CLIPTextEncode"},
+      "widgets_values": ["professional photo of a person, standing pose, looking at camera, studio lighting, clean background, high quality, detailed face, sharp focus, 8k"],
+      "color": "#223",
+      "bgcolor": "#335",
+      "title": "✍️ Positive Prompt (Scene 1 - Studio Portrait)"
+    },
+    {
+      "id": 7,
+      "type": "CLIPTextEncode",
+      "pos": [400, 550],
+      "size": [400, 200],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": 3}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [12], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "CLIPTextEncode"},
+      "widgets_values": ["blurry, low quality, deformed, ugly, bad anatomy, disfigured, poorly drawn face, mutation, extra limbs, watermark, text, signature"],
+      "color": "#322",
+      "bgcolor": "#533",
+      "title": "❌ Negative Prompt"
+    },
+    {
+      "id": 8,
+      "type": "EmptyLatentImage",
+      "pos": [400, 800],
+      "size": [315, 106],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "outputs": [
+        {"name": "LATENT", "type": "LATENT", "links": [13], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "EmptyLatentImage"},
+      "widgets_values": [1024, 1024, 1],
+      "color": "#223",
+      "bgcolor": "#335",
+      "title": "📐 Latent Size (1024x1024)"
+    },
+    {
+      "id": 9,
+      "type": "KSampler",
+      "pos": [850, 200],
+      "size": [315, 262],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {"name": "model", "type": "MODEL", "link": 10},
+        {"name": "positive", "type": "CONDITIONING", "link": 11},
+        {"name": "negative", "type": "CONDITIONING", "link": 12},
+        {"name": "latent_image", "type": "LATENT", "link": 13}
+      ],
+      "outputs": [
+        {"name": "LATENT", "type": "LATENT", "links": [14], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "KSampler"},
+      "widgets_values": [42, "fixed", 30, 7.5, "dpmpp_2m", "karras", 1.0],
+      "color": "#223",
+      "bgcolor": "#335",
+      "title": "🎲 KSampler (Scene 1)"
+    },
+    {
+      "id": 10,
+      "type": "VAEDecode",
+      "pos": [1250, 200],
+      "size": [210, 46],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {"name": "samples", "type": "LATENT", "link": 14},
+        {"name": "vae", "type": "VAE", "link": 4}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [15, 30], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "VAEDecode"},
+      "widgets_values": [],
+      "title": "🖼️ VAE Decode (Scene 1)"
+    },
+    {
+      "id": 11,
+      "type": "SaveImage",
+      "pos": [1500, 200],
+      "size": [315, 270],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 15}
+      ],
+      "properties": {"Node name for S&R": "SaveImage"},
+      "widgets_values": ["consistent_char/scene1_"],
+      "color": "#232",
+      "bgcolor": "#353",
+      "title": "💾 Save Scene 1 - Studio Portrait"
+    },
+    {
+      "id": 12,
+      "type": "CLIPTextEncode",
+      "pos": [850, 550],
+      "size": [400, 200],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": 2}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [16], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "CLIPTextEncode"},
+      "widgets_values": ["professional photo of a person, sitting at a cafe, holding coffee cup, natural lighting, urban background, candid pose, high quality, detailed face"],
+      "color": "#223",
+      "bgcolor": "#335",
+      "title": "✍️ Positive Prompt (Scene 2 - Cafe)"
+    },
+    {
+      "id": 13,
+      "type": "KSampler",
+      "pos": [1300, 550],
+      "size": [315, 262],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {"name": "model", "type": "MODEL", "link": 10},
+        {"name": "positive", "type": "CONDITIONING", "link": 16},
+        {"name": "negative", "type": "CONDITIONING", "link": 12},
+        {"name": "latent_image", "type": "LATENT", "link": 13}
+      ],
+      "outputs": [
+        {"name": "LATENT", "type": "LATENT", "links": [17], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "KSampler"},
+      "widgets_values": [123, "fixed", 30, 7.5, "dpmpp_2m", "karras", 1.0],
+      "color": "#223",
+      "bgcolor": "#335",
+      "title": "🎲 KSampler (Scene 2)"
+    },
+    {
+      "id": 14,
+      "type": "VAEDecode",
+      "pos": [1700, 550],
+      "size": [210, 46],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {"name": "samples", "type": "LATENT", "link": 17},
+        {"name": "vae", "type": "VAE", "link": 4}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [18], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "VAEDecode"},
+      "widgets_values": [],
+      "title": "🖼️ VAE Decode (Scene 2)"
+    },
+    {
+      "id": 15,
+      "type": "SaveImage",
+      "pos": [1950, 550],
+      "size": [315, 270],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 18}
+      ],
+      "properties": {"Node name for S&R": "SaveImage"},
+      "widgets_values": ["consistent_char/scene2_"],
+      "color": "#232",
+      "bgcolor": "#353",
+      "title": "💾 Save Scene 2 - Cafe"
+    },
+    {
+      "id": 16,
+      "type": "CLIPTextEncode",
+      "pos": [850, 900],
+      "size": [400, 200],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": 2}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [19], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "CLIPTextEncode"},
+      "widgets_values": ["professional photo of a person, walking in a park, autumn leaves, golden hour lighting, full body shot, natural setting, high quality, detailed face"],
+      "color": "#223",
+      "bgcolor": "#335",
+      "title": "✍️ Positive Prompt (Scene 3 - Park)"
+    },
+    {
+      "id": 17,
+      "type": "KSampler",
+      "pos": [1300, 900],
+      "size": [315, 262],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [
+        {"name": "model", "type": "MODEL", "link": 10},
+        {"name": "positive", "type": "CONDITIONING", "link": 19},
+        {"name": "negative", "type": "CONDITIONING", "link": 12},
+        {"name": "latent_image", "type": "LATENT", "link": 13}
+      ],
+      "outputs": [
+        {"name": "LATENT", "type": "LATENT", "links": [20], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "KSampler"},
+      "widgets_values": [456, "fixed", 30, 7.5, "dpmpp_2m", "karras", 1.0],
+      "color": "#223",
+      "bgcolor": "#335",
+      "title": "🎲 KSampler (Scene 3)"
+    },
+    {
+      "id": 18,
+      "type": "VAEDecode",
+      "pos": [1700, 900],
+      "size": [210, 46],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "inputs": [
+        {"name": "samples", "type": "LATENT", "link": 20},
+        {"name": "vae", "type": "VAE", "link": 4}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [21], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "VAEDecode"},
+      "widgets_values": [],
+      "title": "🖼️ VAE Decode (Scene 3)"
+    },
+    {
+      "id": 19,
+      "type": "SaveImage",
+      "pos": [1950, 900],
+      "size": [315, 270],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 21}
+      ],
+      "properties": {"Node name for S&R": "SaveImage"},
+      "widgets_values": ["consistent_char/scene3_"],
+      "color": "#232",
+      "bgcolor": "#353",
+      "title": "💾 Save Scene 3 - Park"
+    },
+    {
+      "id": 20,
+      "type": "CLIPTextEncode",
+      "pos": [850, 1250],
+      "size": [400, 200],
+      "flags": {},
+      "order": 19,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": 2}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [22], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "CLIPTextEncode"},
+      "widgets_values": ["professional photo of a person, office setting, standing by window, business casual attire, confident pose, corporate environment, high quality, detailed face"],
+      "color": "#223",
+      "bgcolor": "#335",
+      "title": "✍️ Positive Prompt (Scene 4 - Office)"
+    },
+    {
+      "id": 21,
+      "type": "KSampler",
+      "pos": [1300, 1250],
+      "size": [315, 262],
+      "flags": {},
+      "order": 20,
+      "mode": 0,
+      "inputs": [
+        {"name": "model", "type": "MODEL", "link": 10},
+        {"name": "positive", "type": "CONDITIONING", "link": 22},
+        {"name": "negative", "type": "CONDITIONING", "link": 12},
+        {"name": "latent_image", "type": "LATENT", "link": 13}
+      ],
+      "outputs": [
+        {"name": "LATENT", "type": "LATENT", "links": [23], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "KSampler"},
+      "widgets_values": [789, "fixed", 30, 7.5, "dpmpp_2m", "karras", 1.0],
+      "color": "#223",
+      "bgcolor": "#335",
+      "title": "🎲 KSampler (Scene 4)"
+    },
+    {
+      "id": 22,
+      "type": "VAEDecode",
+      "pos": [1700, 1250],
+      "size": [210, 46],
+      "flags": {},
+      "order": 21,
+      "mode": 0,
+      "inputs": [
+        {"name": "samples", "type": "LATENT", "link": 23},
+        {"name": "vae", "type": "VAE", "link": 4}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [24], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "VAEDecode"},
+      "widgets_values": [],
+      "title": "🖼️ VAE Decode (Scene 4)"
+    },
+    {
+      "id": 23,
+      "type": "SaveImage",
+      "pos": [1950, 1250],
+      "size": [315, 270],
+      "flags": {},
+      "order": 22,
+      "mode": 0,
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 24}
+      ],
+      "properties": {"Node name for S&R": "SaveImage"},
+      "widgets_values": ["consistent_char/scene4_"],
+      "color": "#232",
+      "bgcolor": "#353",
+      "title": "💾 Save Scene 4 - Office"
+    },
+    {
+      "id": 24,
+      "type": "Note",
+      "pos": [-350, 0],
+      "size": [300, 400],
+      "flags": {},
+      "order": 23,
+      "mode": 0,
+      "properties": {"text": ""},
+      "widgets_values": [
+        "🎭 CONSISTENT CHARACTER TEMPLATE\n━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n📋 REQUIRED MODELS:\n• SDXL Base 1.0 checkpoint\n• IP-Adapter Plus SDXL (ip-adapter-plus_sdxl_vit-h.safetensors)\n• CLIP Vision (CLIP-ViT-bigG-14-laion2B-39B-b160k.safetensors)\n\n📦 REQUIRED CUSTOM NODES:\n• ComfyUI_IPAdapter_plus\n  (github.com/cubiq/ComfyUI_IPAdapter_plus)\n\n🔧 HOW TO USE:\n1. Upload your character reference image\n2. Adjust IP-Adapter weight (0.7-1.0)\n   Higher = more faithful to reference\n3. Edit each scene prompt\n4. Queue all scenes\n\n💡 TIPS:\n• Use 0.85 weight for good balance\n• Keep face descriptions minimal in prompts\n• Describe pose, setting, lighting instead\n• Use fixed seeds for reproducibility\n• Add more KSampler branches for more scenes\n\n🎯 For UGC/TikTok production:\n  Duplicate scene branches and change\n  prompts for product-specific poses"
+      ],
+      "color": "#432",
+      "bgcolor": "#653",
+      "title": "📝 INSTRUCTIONS"
+    },
+    {
+      "id": 25,
+      "type": "ImageScale",
+      "pos": [0, 1000],
+      "size": [315, 130],
+      "flags": {},
+      "order": 24,
+      "mode": 0,
+      "inputs": [
+        {"name": "image", "type": "IMAGE", "link": 7}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [31], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "ImageScale"},
+      "widgets_values": ["lanczos", 512, 512, "center"],
+      "color": "#322",
+      "bgcolor": "#533",
+      "title": "📐 Resize Reference (for preview)"
+    },
+    {
+      "id": 26,
+      "type": "PreviewImage",
+      "pos": [400, 1000],
+      "size": [210, 246],
+      "flags": {},
+      "order": 25,
+      "mode": 0,
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 31}
+      ],
+      "properties": {"Node name for S&R": "PreviewImage"},
+      "title": "👤 Reference Preview"
+    },
+    {
+      "id": 27,
+      "type": "PreviewImage",
+      "pos": [1500, 0],
+      "size": [210, 200],
+      "flags": {},
+      "order": 26,
+      "mode": 0,
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 30}
+      ],
+      "properties": {"Node name for S&R": "PreviewImage"},
+      "title": "👀 Preview Scene 1"
+    }
+  ],
+  "links": [
+    [1, 1, 0, 5, 3, "MODEL"],
+    [2, 1, 1, 6, 0, "CLIP"],
+    [3, 1, 1, 7, 0, "CLIP"],
+    [4, 1, 2, 10, 1, "VAE"],
+    [5, 1, 2, 14, 1, "VAE"],
+    [6, 2, 0, 5, 2, "IMAGE"],
+    [7, 2, 0, 25, 0, "IMAGE"],
+    [8, 3, 0, 5, 0, "IPADAPTER"],
+    [9, 4, 0, 5, 1, "CLIP_VISION"],
+    [10, 5, 0, 9, 0, "MODEL"],
+    [11, 6, 0, 9, 1, "CONDITIONING"],
+    [12, 7, 0, 9, 2, "CONDITIONING"],
+    [13, 8, 0, 9, 3, "LATENT"],
+    [14, 9, 0, 10, 0, "LATENT"],
+    [15, 10, 0, 11, 0, "IMAGE"],
+    [16, 12, 0, 13, 1, "CONDITIONING"],
+    [17, 13, 0, 14, 0, "LATENT"],
+    [18, 14, 0, 15, 0, "IMAGE"],
+    [19, 16, 0, 17, 1, "CONDITIONING"],
+    [20, 17, 0, 18, 0, "LATENT"],
+    [21, 18, 0, 19, 0, "IMAGE"],
+    [22, 20, 0, 21, 1, "CONDITIONING"],
+    [23, 21, 0, 22, 0, "LATENT"],
+    [24, 22, 0, 23, 0, "IMAGE"],
+    [30, 10, 0, 27, 0, "IMAGE"],
+    [31, 25, 0, 26, 0, "IMAGE"]
+  ],
+  "groups": [
+    {
+      "title": "📷 INPUT - Character Reference",
+      "bounding": [-50, -50, 750, 550],
+      "color": "#8A4533",
+      "font_size": 24
+    },
+    {
+      "title": "🔌 IP-ADAPTER - Character Consistency Engine",
+      "bounding": [-50, 550, 750, 500],
+      "color": "#3A6633",
+      "font_size": 24
+    },
+    {
+      "title": "🎬 SCENE 1 - Studio Portrait",
+      "bounding": [800, -50, 1500, 500],
+      "color": "#335588",
+      "font_size": 24
+    },
+    {
+      "title": "🎬 SCENE 2 - Cafe",
+      "bounding": [800, 500, 1500, 350],
+      "color": "#335588",
+      "font_size": 24
+    },
+    {
+      "title": "🎬 SCENE 3 - Park",
+      "bounding": [800, 850, 1500, 350],
+      "color": "#335588",
+      "font_size": 24
+    },
+    {
+      "title": "🎬 SCENE 4 - Office",
+      "bounding": [800, 1200, 1500, 350],
+      "color": "#335588",
+      "font_size": 24
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.7,
+      "offset": [100, 100]
+    }
+  },
+  "version": 0.4
+}

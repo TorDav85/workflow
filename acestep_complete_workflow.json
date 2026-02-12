@@ -1,0 +1,336 @@
+{
+  "id": "acestep-complete-workflow",
+  "revision": 1,
+  "last_node_id": 115,
+  "last_link_id": 275,
+  "nodes": [
+    {
+      "id": 3,
+      "type": "KSampler",
+      "pos": [931, -555],
+      "size": [330, 262],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {"name": "model", "type": "MODEL", "link": 175},
+        {"name": "positive", "type": "CONDITIONING", "link": 254},
+        {"name": "negative", "type": "CONDITIONING", "link": 119},
+        {"name": "latent_image", "type": "LATENT", "link": 249},
+        {"name": "seed", "type": "INT", "link": 258}
+      ],
+      "outputs": [
+        {"name": "LATENT", "type": "LATENT", "links": [256]}
+      ],
+      "properties": {"Node name for S&R": "KSampler"},
+      "widgets_values": [49, "fixed", 12, 1, "res_2s", "beta57", 1]
+    },
+    {
+      "id": 18,
+      "type": "VAEDecodeAudio",
+      "pos": [1296, -670],
+      "size": [190, 46],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {"name": "samples", "type": "LATENT", "link": 256},
+        {"name": "vae", "type": "VAE", "link": 248}
+      ],
+      "outputs": [
+        {"name": "AUDIO", "type": "AUDIO", "links": [260, 261, 270, 271]}
+      ],
+      "properties": {"Node name for S&R": "VAEDecodeAudio"}
+    },
+    {
+      "id": 47,
+      "type": "ConditioningZeroOut",
+      "pos": [680, 30],
+      "size": [204, 26],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {"name": "conditioning", "type": "CONDITIONING", "link": 255}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [119]}
+      ],
+      "properties": {"Node name for S&R": "ConditioningZeroOut"}
+    },
+    {
+      "id": 78,
+      "type": "ModelSamplingAuraFlow",
+      "pos": [928, -678],
+      "size": [330, 60],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {"name": "model", "type": "MODEL", "link": 247}
+      ],
+      "outputs": [
+        {"name": "MODEL", "type": "MODEL", "links": [175]}
+      ],
+      "properties": {"Node name for S&R": "ModelSamplingAuraFlow"},
+      "widgets_values": [3]
+    },
+    {
+      "id": 94,
+      "type": "TextEncodeAceStepAudio1.5",
+      "pos": [279, -660],
+      "size": [590, 645],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": 244},
+        {"name": "seed", "type": "INT", "link": 257},
+        {"name": "duration", "type": "FLOAT", "link": 251}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [254, 255]}
+      ],
+      "properties": {"Node name for S&R": "TextEncodeAceStepAudio1.5"},
+      "widgets_values": [
+        "Hardcore Gabber, 90s Rotterdam style, Industrial Drums, Distorted 909 Kick, Hoover Synth, Acidcore, Fast BPM",
+        "Massive distorted kick drums, rolling snares, Rotterdam terror sound, industrial atmosphere, aggressive acid bassline, hardcore energy",
+        49,
+        "fixed",
+        130,
+        210,
+        "4",
+        "en",
+        "E minor"
+      ]
+    },
+    {
+      "id": 97,
+      "type": "CheckpointLoaderSimple",
+      "pos": [-210, -670],
+      "size": [428, 98],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "outputs": [
+        {"name": "MODEL", "type": "MODEL", "links": [247]},
+        {"name": "CLIP", "type": "CLIP", "links": [244]},
+        {"name": "VAE", "type": "VAE", "links": [248]}
+      ],
+      "properties": {"Node name for S&R": "CheckpointLoaderSimple"},
+      "widgets_values": ["ace_step_1.5_turbo_aio.safetensors"]
+    },
+    {
+      "id": 98,
+      "type": "EmptyAudioLatentImage",
+      "pos": [280, 20],
+      "size": [320, 106],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {"name": "seconds", "type": "FLOAT", "link": 250}
+      ],
+      "outputs": [
+        {"name": "LATENT", "type": "LATENT", "links": [249]}
+      ],
+      "properties": {"Node name for S&R": "EmptyAudioLatentImage"},
+      "widgets_values": [210, 1]
+    },
+    {
+      "id": 99,
+      "type": "PrimitiveNode",
+      "pos": [-154, -467],
+      "size": [332, 82],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "outputs": [
+        {"name": "FLOAT", "type": "FLOAT", "links": [250, 251]}
+      ],
+      "title": "Song Duration",
+      "widgets_values": [210, "fixed"]
+    },
+    {
+      "id": 102,
+      "type": "PrimitiveNode",
+      "pos": [-140, -290],
+      "size": [268, 82],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "outputs": [
+        {"name": "INT", "type": "INT", "links": [257, 258]}
+      ],
+      "title": "seed",
+      "widgets_values": [49, "fixed"]
+    },
+    {
+      "id": 104,
+      "type": "SaveAudioMP3",
+      "pos": [1567, -709],
+      "size": [550, 150],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {"name": "audio", "type": "AUDIO", "link": 260}
+      ],
+      "properties": {"Node name for S&R": "SaveAudioMP3"},
+      "widgets_values": ["audio/ComfyUI", "V0"]
+    },
+    {
+      "id": 106,
+      "type": "PreviewAudio",
+      "pos": [1284, -506],
+      "size": [366, 88],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {"name": "audio", "type": "AUDIO", "link": 261}
+      ],
+      "properties": {"Node name for S&R": "PreviewAudio"}
+    },
+    {
+      "id": 110,
+      "type": "LoadAceStepTranscriber",
+      "pos": [1700, -450],
+      "size": [300, 58],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "outputs": [
+        {"name": "MODEL", "type": "TRANSCRIBER_MODEL", "links": [272]}
+      ],
+      "properties": {"Node name for S&R": "LoadAceStepTranscriber"},
+      "widgets_values": ["acestep-transcriber"]
+    },
+    {
+      "id": 111,
+      "type": "AceStepTranscribe",
+      "pos": [2050, -450],
+      "size": [400, 150],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {"name": "model", "type": "TRANSCRIBER_MODEL", "link": 272},
+        {"name": "audio", "type": "AUDIO", "link": 270}
+      ],
+      "outputs": [
+        {"name": "TEXT", "type": "STRING", "links": [273]}
+      ],
+      "properties": {"Node name for S&R": "AceStepTranscribe"},
+      "widgets_values": ["en", true, true]
+    },
+    {
+      "id": 112,
+      "type": "ShowText",
+      "pos": [2500, -450],
+      "size": [500, 300],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {"name": "text", "type": "STRING", "link": 273}
+      ],
+      "properties": {"Node name for S&R": "ShowText"},
+      "title": "Transcription Output"
+    },
+    {
+      "id": 113,
+      "type": "LoadAceStepCaptioner",
+      "pos": [1700, -100],
+      "size": [300, 58],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "outputs": [
+        {"name": "MODEL", "type": "CAPTIONER_MODEL", "links": [274]}
+      ],
+      "properties": {"Node name for S&R": "LoadAceStepCaptioner"},
+      "widgets_values": ["acestep-captioner"]
+    },
+    {
+      "id": 114,
+      "type": "AceStepCaption",
+      "pos": [2050, -100],
+      "size": [400, 200],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {"name": "model", "type": "CAPTIONER_MODEL", "link": 274},
+        {"name": "audio", "type": "AUDIO", "link": 271}
+      ],
+      "outputs": [
+        {"name": "CAPTION", "type": "STRING", "links": [275]}
+      ],
+      "properties": {"Node name for S&R": "AceStepCaption"},
+      "widgets_values": ["detailed", 0.8, true]
+    },
+    {
+      "id": 115,
+      "type": "ShowText",
+      "pos": [2500, -100],
+      "size": [500, 300],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {"name": "text", "type": "STRING", "link": 275}
+      ],
+      "properties": {"Node name for S&R": "ShowText"},
+      "title": "Audio Caption/Description"
+    }
+  ],
+  "links": [
+    [119, 47, 0, 3, 2, "CONDITIONING"],
+    [175, 78, 0, 3, 0, "MODEL"],
+    [244, 97, 1, 94, 0, "CLIP"],
+    [247, 97, 0, 78, 0, "MODEL"],
+    [248, 97, 2, 18, 1, "VAE"],
+    [249, 98, 0, 3, 3, "LATENT"],
+    [250, 99, 0, 98, 0, "FLOAT"],
+    [251, 99, 0, 94, 2, "FLOAT"],
+    [254, 94, 0, 3, 1, "CONDITIONING"],
+    [255, 94, 0, 47, 0, "CONDITIONING"],
+    [256, 3, 0, 18, 0, "LATENT"],
+    [257, 102, 0, 94, 1, "INT"],
+    [258, 102, 0, 3, 4, "INT"],
+    [260, 18, 0, 104, 0, "AUDIO"],
+    [261, 18, 0, 106, 0, "AUDIO"],
+    [270, 18, 0, 111, 1, "AUDIO"],
+    [271, 18, 0, 114, 1, "AUDIO"],
+    [272, 110, 0, 111, 0, "TRANSCRIBER_MODEL"],
+    [273, 111, 0, 112, 0, "STRING"],
+    [274, 113, 0, 114, 0, "CAPTIONER_MODEL"],
+    [275, 114, 0, 115, 0, "STRING"]
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "title": "Step 1 - Load Model & Generate Audio",
+      "bounding": [-220, -740, 1900, 820],
+      "color": "#3f789e"
+    },
+    {
+      "id": 2,
+      "title": "Step 2 - Transcribe Audio (Extract Lyrics)",
+      "bounding": [1680, -500, 1370, 180],
+      "color": "#8A2BE2"
+    },
+    {
+      "id": 3,
+      "title": "Step 3 - Caption Audio (Describe Sound)",
+      "bounding": [1680, -150, 1370, 230],
+      "color": "#FF6347"
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {"scale": 0.6, "offset": [200, 800]}
+  },
+  "version": 0.4
+}

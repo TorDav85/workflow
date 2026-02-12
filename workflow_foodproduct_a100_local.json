@@ -1,0 +1,650 @@
+{
+  "last_node_id": 200,
+  "last_link_id": 300,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "LoadImage",
+      "pos": [0, 0],
+      "size": [320, 314],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [1, 2], "slot_index": 0},
+        {"name": "MASK", "type": "MASK", "links": null}
+      ],
+      "properties": {"Node name for S&R": "LoadImage"},
+      "widgets_values": ["product.jpg", "image"]
+    },
+    {
+      "id": 2,
+      "type": "LoadImage",
+      "pos": [0, 350],
+      "size": [320, 314],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [3, 4], "slot_index": 0},
+        {"name": "MASK", "type": "MASK", "links": null}
+      ],
+      "properties": {"Node name for S&R": "LoadImage"},
+      "widgets_values": ["model.jpg", "image"]
+    },
+    {
+      "id": 10,
+      "type": "CheckpointLoaderSimple",
+      "pos": [350, 0],
+      "size": [315, 98],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "outputs": [
+        {"name": "MODEL", "type": "MODEL", "links": [10], "slot_index": 0},
+        {"name": "CLIP", "type": "CLIP", "links": [11, 12], "slot_index": 1},
+        {"name": "VAE", "type": "VAE", "links": [13], "slot_index": 2}
+      ],
+      "properties": {"Node name for S&R": "CheckpointLoaderSimple"},
+      "widgets_values": ["flux1-dev.safetensors"]
+    },
+    {
+      "id": 11,
+      "type": "CLIPTextEncode",
+      "pos": [700, 0],
+      "size": [400, 200],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": 11}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [20], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "CLIPTextEncode"},
+      "widgets_values": ["Create an editorial photoreal 2x2 grid for a high-end food commercial. Professional studio lighting, 8k resolution, commercial photography style.\n\nPosition 1,1: [Hero Shot] Eye-level studio shot of the product standing perfectly centered. Clean minimalist background. Iconic product photography. Sharp focus, soft shadows, elegant composition.\n\nPosition 1,2: [Texture Macro] Extreme close-up on the product's surface detail. Shallow depth of field, bokeh background. Sensory and appetizing macro photography.\n\nPosition 2,1: [Model Portrait] Cinematic portrait of model holding product near their face. Sharp focus on eyes and product logo. Confident warm expression. High-end fashion film look. Soft rim lighting, blurred background.\n\nPosition 2,2: [Eating Action] Tight close-up of model consuming product. Genuine expression of enjoyment. Natural movement. Warm appetizing lighting. Same style as Position 2,1."]
+    },
+    {
+      "id": 12,
+      "type": "CLIPTextEncode",
+      "pos": [700, 230],
+      "size": [400, 200],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": 12}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [21], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "CLIPTextEncode"},
+      "widgets_values": ["low quality, blurry, distorted, unnatural pose, bad anatomy, deformed, ugly, low resolution, compressed, artifacts, noise, grainy, overexposed, underexposed, bad lighting, amateur, snapchat filter, watermark, text, logo overlay"]
+    },
+    {
+      "id": 20,
+      "type": "KSampler",
+      "pos": [1150, 0],
+      "size": [315, 262],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {"name": "model", "type": "MODEL", "link": 10},
+        {"name": "positive", "type": "CONDITIONING", "link": 20},
+        {"name": "negative", "type": "CONDITIONING", "link": 21},
+        {"name": "latent_image", "type": "LATENT", "link": 30}
+      ],
+      "outputs": [
+        {"name": "LATENT", "type": "LATENT", "links": [40], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "KSampler"},
+      "widgets_values": [42, "fixed", 20, 3.5, "euler", "normal", 1]
+    },
+    {
+      "id": 21,
+      "type": "EmptyLatentImage",
+      "pos": [1150, 300],
+      "size": [315, 106],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "outputs": [
+        {"name": "LATENT", "type": "LATENT", "links": [30], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "EmptyLatentImage"},
+      "widgets_values": [1024, 1024, 4]
+    },
+    {
+      "id": 30,
+      "type": "VAEDecode",
+      "pos": [1500, 0],
+      "size": [210, 46],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {"name": "samples", "type": "LATENT", "link": 40},
+        {"name": "vae", "type": "VAE", "link": 13}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [50, 51, 52, 53], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "VAEDecode"}
+    },
+    {
+      "id": 40,
+      "type": "SaveImage",
+      "pos": [1750, 0],
+      "size": [315, 270],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 50}
+      ],
+      "properties": {},
+      "widgets_values": ["grid_part_a"]
+    },
+    {
+      "id": 50,
+      "type": "DiffusersLoader",
+      "pos": [0, 700],
+      "size": [315, 78],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "outputs": [
+        {"name": "MODEL", "type": "MODEL", "links": [100, 101, 102, 103, 104, 105], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "DiffusersLoader"},
+      "widgets_values": ["wan2.2-moe-I2V"]
+    },
+    {
+      "id": 51,
+      "type": "VAELoader",
+      "pos": [0, 800],
+      "size": [315, 58],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "outputs": [
+        {"name": "VAE", "type": "VAE", "links": [110, 111, 112, 113, 114, 115], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "VAELoader"},
+      "widgets_values": ["vace_wan.safetensors"]
+    },
+    {
+      "id": 100,
+      "type": "CLIPTextEncode",
+      "pos": [350, 700],
+      "size": [400, 200],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": null}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [120], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "CLIPTextEncode"},
+      "widgets_values": ["Cinematic product shot. Eye-level view, perfectly centered in a clean minimalist studio. Soft, elegant lighting. Slow, subtle camera zoom in. The product remains stationary. High-end commercial look, 4k resolution."]
+    },
+    {
+      "id": 101,
+      "type": "CLIPTextEncode",
+      "pos": [350, 920],
+      "size": [400, 200],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": null}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [121], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "CLIPTextEncode"},
+      "widgets_values": ["low quality, blurry, distorted, unnatural movement, jerky motion, flickering, artifacts, compression, pixelated, unstable, shaky camera, bad framing, overexposed, underexposed"]
+    },
+    {
+      "id": 110,
+      "type": "ImageToVideo",
+      "pos": [800, 700],
+      "size": [315, 250],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {"name": "model", "type": "MODEL", "link": 100},
+        {"name": "vae", "type": "VAE", "link": 110},
+        {"name": "image", "type": "IMAGE", "link": 51},
+        {"name": "positive", "type": "CONDITIONING", "link": 120},
+        {"name": "negative", "type": "CONDITIONING", "link": 121}
+      ],
+      "outputs": [
+        {"name": "VIDEO", "type": "VIDEO", "links": [150], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "ImageToVideo"},
+      "widgets_values": [720, 1280, 125, 30, 7.0, 42]
+    },
+    {
+      "id": 111,
+      "type": "SaveVideo",
+      "pos": [1150, 700],
+      "size": [315, 100],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {"name": "video", "type": "VIDEO", "link": 150}
+      ],
+      "properties": {},
+      "widgets_values": ["video_1_product_hero", 25, "h264"]
+    },
+    {
+      "id": 120,
+      "type": "CLIPTextEncode",
+      "pos": [350, 1150],
+      "size": [400, 200],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": null}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [122], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "CLIPTextEncode"},
+      "widgets_values": ["Cinematic portrait of model holding product near their face. Commercial film style. The model looks confidently at the camera, smiles gently, and blinks naturally. The product is held steady. Soft rim lighting, blurry background. High quality, photorealistic, slow motion."]
+    },
+    {
+      "id": 121,
+      "type": "CLIPTextEncode",
+      "pos": [350, 1370],
+      "size": [400, 200],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": null}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [123], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "CLIPTextEncode"},
+      "widgets_values": ["low quality, blurry, distorted, unnatural movement, jerky motion, flickering, artifacts, compression, pixelated, unstable, shaky camera, bad framing, overexposed, underexposed"]
+    },
+    {
+      "id": 130,
+      "type": "ImageToVideo",
+      "pos": [800, 1150],
+      "size": [315, 250],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "inputs": [
+        {"name": "model", "type": "MODEL", "link": 101},
+        {"name": "vae", "type": "VAE", "link": 111},
+        {"name": "image", "type": "IMAGE", "link": 52},
+        {"name": "positive", "type": "CONDITIONING", "link": 122},
+        {"name": "negative", "type": "CONDITIONING", "link": 123}
+      ],
+      "outputs": [
+        {"name": "VIDEO", "type": "VIDEO", "links": [151], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "ImageToVideo"},
+      "widgets_values": [720, 1280, 125, 30, 7.0, 42]
+    },
+    {
+      "id": 131,
+      "type": "SaveVideo",
+      "pos": [1150, 1150],
+      "size": [315, 100],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [
+        {"name": "video", "type": "VIDEO", "link": 151}
+      ],
+      "properties": {},
+      "widgets_values": ["video_2_model_portrait", 25, "h264"]
+    },
+    {
+      "id": 140,
+      "type": "CLIPTextEncode",
+      "pos": [350, 1600],
+      "size": [400, 200],
+      "flags": {},
+      "order": 19,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": null}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [124], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "CLIPTextEncode"},
+      "widgets_values": ["Extreme close-up macro video of product surface. Incredible detail of texture and material. Slow camera pan across the surface to reveal fine details. Shallow depth of field, bokeh background. Sensory and appetizing, slow motion."]
+    },
+    {
+      "id": 141,
+      "type": "CLIPTextEncode",
+      "pos": [350, 1820],
+      "size": [400, 200],
+      "flags": {},
+      "order": 20,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": null}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [125], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "CLIPTextEncode"},
+      "widgets_values": ["low quality, blurry, distorted, unnatural movement, jerky motion, flickering, artifacts, compression, pixelated, unstable, shaky camera, bad framing, overexposed, underexposed"]
+    },
+    {
+      "id": 150,
+      "type": "ImageToVideo",
+      "pos": [800, 1600],
+      "size": [315, 250],
+      "flags": {},
+      "order": 21,
+      "mode": 0,
+      "inputs": [
+        {"name": "model", "type": "MODEL", "link": 102},
+        {"name": "vae", "type": "VAE", "link": 112},
+        {"name": "image", "type": "IMAGE", "link": 53},
+        {"name": "positive", "type": "CONDITIONING", "link": 124},
+        {"name": "negative", "type": "CONDITIONING", "link": 125}
+      ],
+      "outputs": [
+        {"name": "VIDEO", "type": "VIDEO", "links": [152], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "ImageToVideo"},
+      "widgets_values": [720, 1280, 125, 30, 7.0, 42]
+    },
+    {
+      "id": 151,
+      "type": "SaveVideo",
+      "pos": [1150, 1600],
+      "size": [315, 100],
+      "flags": {},
+      "order": 22,
+      "mode": 0,
+      "inputs": [
+        {"name": "video", "type": "VIDEO", "link": 152}
+      ],
+      "properties": {},
+      "widgets_values": ["video_3_macro_texture", 25, "h264"]
+    },
+    {
+      "id": 160,
+      "type": "CLIPTextEncode",
+      "pos": [350, 2050],
+      "size": [400, 200],
+      "flags": {},
+      "order": 23,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": null}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [126], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "CLIPTextEncode"},
+      "widgets_values": ["Close-up action shot of model consuming product. Focus on the lips and the expression of enjoyment. Real-time speed or slight slow motion. The movement is natural and satisfying. Warm, appetizing lighting."]
+    },
+    {
+      "id": 161,
+      "type": "CLIPTextEncode",
+      "pos": [350, 2270],
+      "size": [400, 200],
+      "flags": {},
+      "order": 24,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": null}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [127], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "CLIPTextEncode"},
+      "widgets_values": ["low quality, blurry, distorted, unnatural movement, jerky motion, flickering, artifacts, compression, pixelated, unstable, shaky camera, bad framing, overexposed, underexposed"]
+    },
+    {
+      "id": 170,
+      "type": "ImageToVideo",
+      "pos": [800, 2050],
+      "size": [315, 250],
+      "flags": {},
+      "order": 25,
+      "mode": 0,
+      "inputs": [
+        {"name": "model", "type": "MODEL", "link": 103},
+        {"name": "vae", "type": "VAE", "link": 113},
+        {"name": "image", "type": "IMAGE", "link": 1},
+        {"name": "positive", "type": "CONDITIONING", "link": 126},
+        {"name": "negative", "type": "CONDITIONING", "link": 127}
+      ],
+      "outputs": [
+        {"name": "VIDEO", "type": "VIDEO", "links": [153], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "ImageToVideo"},
+      "widgets_values": [720, 1280, 125, 30, 7.0, 42]
+    },
+    {
+      "id": 171,
+      "type": "SaveVideo",
+      "pos": [1150, 2050],
+      "size": [315, 100],
+      "flags": {},
+      "order": 26,
+      "mode": 0,
+      "inputs": [
+        {"name": "video", "type": "VIDEO", "link": 153}
+      ],
+      "properties": {},
+      "widgets_values": ["video_4_eating_action", 25, "h264"]
+    },
+    {
+      "id": 180,
+      "type": "CLIPTextEncode",
+      "pos": [350, 2500],
+      "size": [400, 200],
+      "flags": {},
+      "order": 27,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": null}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [128], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "CLIPTextEncode"},
+      "widgets_values": ["Morphing transition. A dynamic explosion of product seamlessly transforming into floating, deconstructed ingredients. Zero gravity effect. Items rotate slowly in mid-air. High-speed photography style, smooth transition, solid background."]
+    },
+    {
+      "id": 181,
+      "type": "CLIPTextEncode",
+      "pos": [350, 2720],
+      "size": [400, 200],
+      "flags": {},
+      "order": 28,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": null}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [129], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "CLIPTextEncode"},
+      "widgets_values": ["low quality, blurry, distorted, unnatural movement, jerky motion, flickering, artifacts, compression, pixelated, unstable, shaky camera, bad framing, overexposed, underexposed"]
+    },
+    {
+      "id": 190,
+      "type": "ImageToVideo",
+      "pos": [800, 2500],
+      "size": [315, 250],
+      "flags": {},
+      "order": 29,
+      "mode": 0,
+      "inputs": [
+        {"name": "model", "type": "MODEL", "link": 104},
+        {"name": "vae", "type": "VAE", "link": 114},
+        {"name": "image", "type": "IMAGE", "link": 2},
+        {"name": "positive", "type": "CONDITIONING", "link": 128},
+        {"name": "negative", "type": "CONDITIONING", "link": 129}
+      ],
+      "outputs": [
+        {"name": "VIDEO", "type": "VIDEO", "links": [154], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "ImageToVideo"},
+      "widgets_values": [720, 1280, 125, 30, 7.0, 42]
+    },
+    {
+      "id": 191,
+      "type": "SaveVideo",
+      "pos": [1150, 2500],
+      "size": [315, 100],
+      "flags": {},
+      "order": 30,
+      "mode": 0,
+      "inputs": [
+        {"name": "video", "type": "VIDEO", "link": 154}
+      ],
+      "properties": {},
+      "widgets_values": ["video_5_transition_morph", 25, "h264"]
+    },
+    {
+      "id": 200,
+      "type": "CLIPTextEncode",
+      "pos": [350, 2950],
+      "size": [400, 200],
+      "flags": {},
+      "order": 31,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": null}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [130], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "CLIPTextEncode"},
+      "widgets_values": ["Zoom transition. A lifestyle shot of product on a table, camera zooms in quickly, dissolving into a clean, 2D graphic of the brand logo on a solid background. The logo pops up or pulses gently at the end. Motion graphics style ending."]
+    },
+    {
+      "id": 201,
+      "type": "CLIPTextEncode",
+      "pos": [350, 3170],
+      "size": [400, 200],
+      "flags": {},
+      "order": 32,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": null}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [131], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "CLIPTextEncode"},
+      "widgets_values": ["low quality, blurry, distorted, unnatural movement, jerky motion, flickering, artifacts, compression, pixelated, unstable, shaky camera, bad framing, overexposed, underexposed"]
+    },
+    {
+      "id": 210,
+      "type": "ImageToVideo",
+      "pos": [800, 2950],
+      "size": [315, 250],
+      "flags": {},
+      "order": 33,
+      "mode": 0,
+      "inputs": [
+        {"name": "model", "type": "MODEL", "link": 105},
+        {"name": "vae", "type": "VAE", "link": 115},
+        {"name": "image", "type": "IMAGE", "link": 3},
+        {"name": "positive", "type": "CONDITIONING", "link": 130},
+        {"name": "negative", "type": "CONDITIONING", "link": 131}
+      ],
+      "outputs": [
+        {"name": "VIDEO", "type": "VIDEO", "links": [155], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "ImageToVideo"},
+      "widgets_values": [720, 1280, 125, 30, 7.0, 42]
+    },
+    {
+      "id": 211,
+      "type": "SaveVideo",
+      "pos": [1150, 2950],
+      "size": [315, 100],
+      "flags": {},
+      "order": 34,
+      "mode": 0,
+      "inputs": [
+        {"name": "video", "type": "VIDEO", "link": 155}
+      ],
+      "properties": {},
+      "widgets_values": ["video_6_transition_zoom", 25, "h264"]
+    }
+  ],
+  "links": [
+    [1, 1, 0, 170, 2, "IMAGE"],
+    [2, 1, 0, 190, 2, "IMAGE"],
+    [3, 2, 0, 210, 2, "IMAGE"],
+    [4, 2, 0, 1, 0, "IMAGE"],
+    [10, 10, 0, 20, 0, "MODEL"],
+    [11, 10, 1, 11, 0, "CLIP"],
+    [12, 10, 1, 12, 0, "CLIP"],
+    [13, 10, 2, 30, 1, "VAE"],
+    [20, 11, 0, 20, 1, "CONDITIONING"],
+    [21, 12, 0, 20, 2, "CONDITIONING"],
+    [30, 21, 0, 20, 3, "LATENT"],
+    [40, 20, 0, 30, 0, "LATENT"],
+    [50, 30, 0, 40, 0, "IMAGE"],
+    [51, 30, 0, 110, 2, "IMAGE"],
+    [52, 30, 0, 130, 2, "IMAGE"],
+    [53, 30, 0, 150, 2, "IMAGE"],
+    [100, 50, 0, 110, 0, "MODEL"],
+    [101, 50, 0, 130, 0, "MODEL"],
+    [102, 50, 0, 150, 0, "MODEL"],
+    [103, 50, 0, 170, 0, "MODEL"],
+    [104, 50, 0, 190, 0, "MODEL"],
+    [105, 50, 0, 210, 0, "MODEL"],
+    [110, 51, 0, 110, 1, "VAE"],
+    [111, 51, 0, 130, 1, "VAE"],
+    [112, 51, 0, 150, 1, "VAE"],
+    [113, 51, 0, 170, 1, "VAE"],
+    [114, 51, 0, 190, 1, "VAE"],
+    [115, 51, 0, 210, 1, "VAE"],
+    [120, 100, 0, 110, 3, "CONDITIONING"],
+    [121, 101, 0, 110, 4, "CONDITIONING"],
+    [122, 120, 0, 130, 3, "CONDITIONING"],
+    [123, 121, 0, 130, 4, "CONDITIONING"],
+    [124, 140, 0, 150, 3, "CONDITIONING"],
+    [125, 141, 0, 150, 4, "CONDITIONING"],
+    [126, 160, 0, 170, 3, "CONDITIONING"],
+    [127, 161, 0, 170, 4, "CONDITIONING"],
+    [128, 180, 0, 190, 3, "CONDITIONING"],
+    [129, 181, 0, 190, 4, "CONDITIONING"],
+    [130, 200, 0, 210, 3, "CONDITIONING"],
+    [131, 201, 0, 210, 4, "CONDITIONING"],
+    [150, 110, 0, 111, 0, "VIDEO"],
+    [151, 130, 0, 131, 0, "VIDEO"],
+    [152, 150, 0, 151, 0, "VIDEO"],
+    [153, 170, 0, 171, 0, "VIDEO"],
+    [154, 190, 0, 191, 0, "VIDEO"],
+    [155, 210, 0, 211, 0, "VIDEO"]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 1.0,
+      "offset": [0, 0]
+    }
+  },
+  "version": 0.4
+}

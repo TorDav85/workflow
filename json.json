@@ -1,0 +1,153 @@
+{
+  "version": 0.4,
+  "config": {},
+  "nodes": [
+    {
+      "id": 1,
+      "type": "LoadImage",
+      "pos": [-1800, -200],
+      "size": [320, 330],
+      "widgets_values": ["avatar.png", "image"],
+      "title": "Avatar"
+    },
+    {
+      "id": 2,
+      "type": "LoadImage",
+      "pos": [-1800, 200],
+      "size": [320, 330],
+      "widgets_values": ["product.png", "image"],
+      "title": "Produit"
+    },
+    {
+      "id": 3,
+      "type": "LoadAudio",
+      "pos": [-1800, 600],
+      "size": [320, 200],
+      "widgets_values": ["voice.wav"],
+      "title": "TTS Audio (XTTS)"
+    },
+    {
+      "id": 10,
+      "type": "INTConstant",
+      "pos": [-1500, -400],
+      "size": [200, 80],
+      "widgets_values": [480],
+      "title": "Width"
+    },
+    {
+      "id": 11,
+      "type": "INTConstant",
+      "pos": [-1500, -300],
+      "size": [200, 80],
+      "widgets_values": [832],
+      "title": "Height"
+    },
+    {
+      "id": 20,
+      "type": "ImageResizeKJv2",
+      "pos": [-1200, -200],
+      "size": [280, 320],
+      "inputs": [
+        { "name": "image", "type": "IMAGE", "link": 1 },
+        { "name": "width", "type": "INT", "link": 3 },
+        { "name": "height", "type": "INT", "link": 4 }
+      ],
+      "outputs": [
+        { "name": "IMAGE", "type": "IMAGE", "links": [5] }
+      ],
+      "widgets_values": [480, 832, "lanczos", "pad", "0,0,0", "center", 16, "cpu"],
+      "title": "Resize Avatar"
+    },
+    {
+      "id": 21,
+      "type": "ImageResizeKJv2",
+      "pos": [-1200, 200],
+      "size": [280, 320],
+      "inputs": [
+        { "name": "image", "type": "IMAGE", "link": 2 },
+        { "name": "width", "type": "INT", "link": 3 },
+        { "name": "height", "type": "INT", "link": 4 }
+      ],
+      "outputs": [
+        { "name": "IMAGE", "type": "IMAGE", "links": [6] }
+      ],
+      "widgets_values": [480, 832, "lanczos", "pad", "0,0,0", "center", 16, "cpu"],
+      "title": "Resize Produit"
+    },
+    {
+      "id": 30,
+      "type": "WanVideoModelLoader",
+      "pos": [-600, 100],
+      "size": [400, 300],
+      "widgets_values": [
+        "SkyReels-V3-R2V_fp8_scaled_mixed.safetensors",
+        "fp16",
+        "fp8_e4m3fn",
+        "cuda",
+        "sageattn",
+        "default"
+      ],
+      "title": "SkyReels Loader"
+    },
+    {
+      "id": 40,
+      "type": "WanVideoSampler",
+      "pos": [-100, 100],
+      "size": [350, 500],
+      "inputs": [
+        { "name": "model", "type": "WANVIDEOMODEL", "link": 7 },
+        { "name": "image_1", "type": "IMAGE", "link": 5 },
+        { "name": "image_2", "type": "IMAGE", "link": 6 }
+      ],
+      "outputs": [
+        { "name": "samples", "type": "LATENT", "links": [8] }
+      ],
+      "widgets_values": [15, 1.0, 123456, false, "unipc"],
+      "title": "Video Sampler"
+    },
+    {
+      "id": 50,
+      "type": "WanVideoDecode",
+      "pos": [300, 100],
+      "size": [300, 200],
+      "inputs": [
+        { "name": "samples", "type": "LATENT", "link": 8 }
+      ],
+      "outputs": [
+        { "name": "images", "type": "IMAGE", "links": [9] }
+      ],
+      "title": "Decode"
+    },
+    {
+      "id": 60,
+      "type": "VHS_VideoCombine",
+      "pos": [700, 100],
+      "size": [500, 400],
+      "inputs": [
+        { "name": "images", "type": "IMAGE", "link": 9 },
+        { "name": "audio", "type": "AUDIO", "link": 10 }
+      ],
+      "widgets_values": {
+        "frame_rate": 24,
+        "filename_prefix": "UGC_LOCAL",
+        "format": "video/h264-mp4",
+        "crf": 18,
+        "save_output": true
+      },
+      "title": "Final Export"
+    }
+  ],
+  "links": [
+    [1, 1, 0, 20, 0, "IMAGE"],
+    [2, 2, 0, 21, 0, "IMAGE"],
+    [3, 10, 0, 20, 1, "INT"],
+    [4, 11, 0, 20, 2, "INT"],
+    [5, 10, 0, 21, 1, "INT"],
+    [6, 11, 0, 21, 2, "INT"],
+    [7, 30, 0, 40, 0, "WANVIDEOMODEL"],
+    [8, 20, 0, 40, 1, "IMAGE"],
+    [9, 21, 0, 40, 2, "IMAGE"],
+    [10, 3, 0, 60, 1, "AUDIO"],
+    [11, 50, 0, 60, 0, "IMAGE"]
+  ]
+}

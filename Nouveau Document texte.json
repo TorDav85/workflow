@@ -1,0 +1,277 @@
+{
+  "id": "ugc-product-video-generator-v2",
+  "revision": 2,
+  "last_node_id": 40,
+  "last_link_id": 60,
+
+  "nodes": [
+
+    {
+      "id": 1,
+      "type": "LoadImage",
+      "pos": [-900, -400],
+      "size": [260, 300],
+      "title": "📦 Product Image",
+      "widgets_values": ["product.png", "image"]
+    },
+
+    {
+      "id": 2,
+      "type": "LoadImage",
+      "pos": [-900, 0],
+      "size": [260, 300],
+      "title": "👤 Presenter Face",
+      "widgets_values": ["presenter.png", "image"]
+    },
+
+    {
+      "id": 3,
+      "type": "WanVideoModelLoader",
+      "pos": [-500, -500],
+      "size": [420, 200],
+      "title": "🎬 Wan 2.1 Model",
+      "widgets_values": [
+        "wan2.1_i2v_480p_14B_fp8_e4m3fn.safetensors",
+        "fp16_fast",
+        "disabled",
+        "offload_device",
+        "sageattn",
+        "default"
+      ]
+    },
+
+    {
+      "id": 4,
+      "type": "WanVideoVAELoader",
+      "pos": [-500, -250],
+      "size": [350, 90],
+      "title": "🎨 VAE",
+      "widgets_values": ["wan_2.1_vae.safetensors", "bf16"]
+    },
+
+    {
+      "id": 5,
+      "type": "WanVideoTextEncoderLoader",
+      "pos": [-500, -120],
+      "size": [350, 100],
+      "title": "📝 Text Encoder",
+      "widgets_values": ["umt5_xxl_fp8_e4m3fn_scaled.safetensors", "offload_device"]
+    },
+
+    {
+      "id": 6,
+      "type": "WanVideoBlockSwap",
+      "pos": [-900, -600],
+      "size": [350, 130],
+      "title": "⚡ VRAM Optimizer",
+      "widgets_values": [20, 0, false, 4]
+    },
+
+    {
+      "id": 7,
+      "type": "WanVideoTextEncode",
+      "pos": [0, -520],
+      "size": [450, 200],
+      "title": "✨ Positive Prompt",
+      "widgets_values": [
+        "TikTok UGC video, handheld camera, natural light, smiling presenter holding product, authentic review, cinematic, 4k, sharp focus"
+      ]
+    },
+
+    {
+      "id": 8,
+      "type": "WanVideoTextEncode",
+      "pos": [0, -300],
+      "size": [450, 180],
+      "title": "🚫 Negative Prompt",
+      "widgets_values": [
+        "blurry, low quality, bad anatomy, distorted face, extra fingers, watermark, logo, text, artifacts, deformed hands"
+      ]
+    },
+
+    {
+      "id": 9,
+      "type": "WanVideoImageEncode",
+      "pos": [0, -80],
+      "size": [350, 120],
+      "title": "🖼️ Product Encoder",
+      "widgets_values": [0, 1]
+    },
+
+    {
+      "id": 10,
+      "type": "CLIPVisionLoader",
+      "pos": [-500, 100],
+      "size": [350, 70],
+      "title": "👁️ CLIP Vision",
+      "widgets_values": ["clip_vision_h.safetensors"]
+    },
+
+    {
+      "id": 11,
+      "type": "CLIPVisionEncode",
+      "pos": [0, 120],
+      "size": [300, 90],
+      "title": "👤 Face Encoder"
+    },
+
+    {
+      "id": 12,
+      "type": "PrimitiveNode",
+      "pos": [-500, 260],
+      "size": [320, 70],
+      "title": "🌱 Seed",
+      "widgets_values": [12345, "random"]
+    },
+
+    {
+      "id": 13,
+      "type": "PrimitiveNode",
+      "pos": [-500, 340],
+      "size": [320, 70],
+      "title": "🎞️ Frames",
+      "widgets_values": [120, "fixed"]
+    },
+
+    {
+      "id": 14,
+      "type": "PrimitiveNode",
+      "pos": [-500, 420],
+      "size": [320, 70],
+      "title": "🎯 CFG",
+      "widgets_values": [5.5, "fixed"]
+    },
+
+    {
+      "id": 15,
+      "type": "WanVideoSampler",
+      "pos": [500, -350],
+      "size": [420, 380],
+      "title": "🎲 Sampler",
+      "widgets_values": [
+        832,
+        480,
+        120,
+        30,
+        5.5,
+        "random",
+        12345,
+        1.0
+      ]
+    },
+
+    {
+      "id": 16,
+      "type": "WanVideoDecode",
+      "pos": [950, -320],
+      "size": [300, 120],
+      "title": "🎞️ Decode",
+      "widgets_values": [true, 16, 8]
+    },
+
+    {
+      "id": 17,
+      "type": "VHS_VideoCombine",
+      "pos": [1300, -350],
+      "size": [380, 320],
+      "title": "💾 Export MP4",
+      "widgets_values": {
+        "frame_rate": 24,
+        "loop_count": 0,
+        "filename_prefix": "ugc_v2",
+        "format": "video/h264-mp4",
+        "pix_fmt": "yuv420p",
+        "crf": 17,
+        "save_metadata": true,
+        "pingpong": false,
+        "save_output": true
+      }
+    },
+
+    {
+      "id": 18,
+      "type": "PreviewImage",
+      "pos": [1300, 0],
+      "size": [300, 260],
+      "title": "👀 Preview"
+    },
+
+    {
+      "id": 19,
+      "type": "Note",
+      "pos": [-900, -780],
+      "size": [650, 90],
+      "title": "📋 Instructions",
+      "widgets_values": [
+        "UGC VIDEO GENERATOR V2\n1. Load product\n2. Load face\n3. Edit prompt\n4. Adjust seed/CFG/frames\n5. Run"
+      ]
+    },
+
+    {
+      "id": 20,
+      "type": "Note",
+      "pos": [480, -760],
+      "size": [420, 100],
+      "title": "🎯 Presets",
+      "widgets_values": [
+        "Soft: CFG 4.5 | 120f\nAds: CFG 7 | 80f\nLuxury: CFG 5.5 | Studio light"
+      ]
+    }
+
+  ],
+
+  "groups": [
+
+    {
+      "id": 1,
+      "title": "📥 INPUT",
+      "bounding": [-950, -450, 350, 800]
+    },
+
+    {
+      "id": 2,
+      "title": "🧠 LOADERS",
+      "bounding": [-550, -550, 500, 450]
+    },
+
+    {
+      "id": 3,
+      "title": "⚙️ ENCODERS",
+      "bounding": [-50, -550, 500, 450]
+    },
+
+    {
+      "id": 4,
+      "title": "🎛️ CONTROLS",
+      "bounding": [-550, 230, 400, 300]
+    },
+
+    {
+      "id": 5,
+      "title": "🎬 GENERATION",
+      "bounding": [450, -550, 500, 500]
+    },
+
+    {
+      "id": 6,
+      "title": "💾 OUTPUT",
+      "bounding": [900, -450, 850, 450]
+    }
+
+  ],
+
+  "extra": {
+    "info": {
+      "name": "UGC Product Video Generator V2",
+      "author": "Optimized",
+      "version": "2.0",
+      "description": "UGC TikTok/Reels generator with negative prompt, batch ready, better export",
+      "requirements": [
+        "ComfyUI-WanVideo",
+        "ComfyUI-VideoHelperSuite"
+      ]
+    }
+  },
+
+  "version": 0.4
+}
